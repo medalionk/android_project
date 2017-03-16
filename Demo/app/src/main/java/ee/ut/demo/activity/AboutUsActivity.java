@@ -18,7 +18,7 @@ public class AboutUsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_schedules);
+        setContentView(R.layout.activity_schedule);
     }
 
     @Override

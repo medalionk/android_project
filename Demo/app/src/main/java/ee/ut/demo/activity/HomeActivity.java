@@ -24,6 +24,8 @@ import ee.ut.demo.fragment.MapFragment;
 import ee.ut.demo.fragment.NotificationFragment;
 import ee.ut.demo.fragment.SettingFragment;
 
+import static ee.ut.demo.R.id.toolbar;
+
 /**
  * @Authors: Ayobami Adewale, Abdullah Bilal
  * @Supervisor Jakob Mass
@@ -38,49 +40,49 @@ SettingFragment.OnFragmentInteractionListener{
     private static final String TAG_NOTIFICATIONS = "notifications";
     private static final String TAG_SETTINGS = "settings";
 
-    public static int navItemIndex = 0;
     public static String CURRENT_TAG = TAG_HOME;
+    public static int mNavItemIndex = 0;
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
-    private View navHeader;
-    private ImageView imgNavHeaderBg;
-    private Toolbar toolbar;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawer;
+    private View mNavHeader;
+    private ImageView mImgNavHeaderBg;
+    private Toolbar mToolbar;
 
-    private String[] activityTitles;
+    private String[] mActivityTitles;
 
-    private boolean shouldLoadHomeFragOnBackPress = true;
+    private boolean mShouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(toolbar);
+        setSupportActionBar(mToolbar);
 
         mHandler = new Handler();
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        navHeader = navigationView.getHeaderView(0);
-        imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        mNavHeader = mNavigationView.getHeaderView(0);
+        mImgNavHeaderBg = (ImageView) mNavHeader.findViewById(R.id.img_header_bg);
 
-        activityTitles = getResources().getStringArray(R.array.home_menu);
+        mActivityTitles = getResources().getStringArray(R.array.home_menu);
         loadNavHeader();
 
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            navItemIndex = 0;
+            mNavItemIndex = 0;
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
     }
 
     private void loadNavHeader() {
-        imgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.tartu));
+        mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.tartu));
     }
 
     /***
@@ -93,7 +95,7 @@ SettingFragment.OnFragmentInteractionListener{
         setToolbarTitle();
 
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
-            drawer.closeDrawers();
+            mDrawer.closeDrawers();
             return;
         }
 
@@ -114,13 +116,13 @@ SettingFragment.OnFragmentInteractionListener{
             mHandler.post(mPendingRunnable);
         }
 
-        drawer.closeDrawers();
+        mDrawer.closeDrawers();
 
         invalidateOptionsMenu();
     }
 
     private Fragment getHomeFragment() {
-        switch (navItemIndex) {
+        switch (mNavItemIndex) {
             case 0:
                 // home
                 HomeFragment homeFragment = new HomeFragment();
@@ -144,61 +146,68 @@ SettingFragment.OnFragmentInteractionListener{
     }
 
     private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+        getSupportActionBar().setTitle(mActivityTitles[mNavItemIndex]);
     }
 
     private void selectNavMenu() {
-        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+        mNavigationView.getMenu().getItem(mNavItemIndex).setChecked(true);
     }
 
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.home:
-                        navItemIndex = 0;
+                        mNavItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
                         break;
+
                     case R.id.nav_notifications:
-                        navItemIndex = 3;
+                        mNavItemIndex = 3;
                         CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
+
                     case R.id.map:
-                        navItemIndex =  5;
+                        mNavItemIndex =  5;
                         CURRENT_TAG = TAG_MAP;
                         break;
+
                     case R.id.nav_settings:
-                        navItemIndex = 6;
+                        mNavItemIndex = 6;
                         CURRENT_TAG = TAG_SETTINGS;
                         break;
+
                     case R.id.nav_playlist:
                         Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(HomeActivity.this,EventsActivity.class));
-                        drawer.closeDrawers();
+                        mDrawer.closeDrawers();
                         return true;
+
                     case R.id.event_Schedules:
-                        Toast.makeText(getApplicationContext(), "Event Schedules Clicked(not created)", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(HomeActivity.this,EventsActivity.class));
-                        drawer.closeDrawers();
+                        mDrawer.closeDrawers();
                         return true;
+
                     case R.id.personal_Schedules:
                         Toast.makeText(getApplicationContext(), "Personal Schedules Clicked(not created)", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(HomeActivity.this,SchedulesActivity.class));
-                        drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this,ScheduleActivity.class));
+                        mDrawer.closeDrawers();
                         return true;
+
                     case R.id.nav_about_us:
                         startActivity(new Intent(HomeActivity.this, AboutUsActivity.class));
-                        drawer.closeDrawers();
+                        mDrawer.closeDrawers();
                         return true;
+
                     case R.id.sponsors:
                         startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));
-                        drawer.closeDrawers();
+                        mDrawer.closeDrawers();
                         return true;
                     default:
-                        navItemIndex = 0;
+                        mNavItemIndex = 0;
                 }
 
                 //Checking if the item is in checked state or not, if not make it in checked state
@@ -217,7 +226,7 @@ SettingFragment.OnFragmentInteractionListener{
 
 
         ActionBarDrawerToggle actionBarDrawerToggle =
-                new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+                new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.openDrawer, R.string.closeDrawer) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -229,22 +238,22 @@ SettingFragment.OnFragmentInteractionListener{
             }
         };
 
-        drawer.setDrawerListener(actionBarDrawerToggle);
+        mDrawer.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawers();
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawers();
             return;
         }
 
-        if (shouldLoadHomeFragOnBackPress) {
+        if (mShouldLoadHomeFragOnBackPress) {
             // checking if user is on other navigation menu
             // rather than home
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
+            if (mNavItemIndex != 0) {
+                mNavItemIndex = 0;
                 CURRENT_TAG = TAG_HOME;
                 loadHomeFragment();
                 return;
@@ -257,11 +266,11 @@ SettingFragment.OnFragmentInteractionListener{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        if (navItemIndex == 0) {
+        if (mNavItemIndex == 0) {
             //menu to display at home fragment, currently leaving this empty
         }
 
-        if (navItemIndex == 3) {
+        if (mNavItemIndex == 3) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
         return true;
