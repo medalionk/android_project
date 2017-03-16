@@ -7,21 +7,24 @@ import android.view.MenuItem;
 import ee.ut.demo.R;
 
 /**
- * Created by firars group on 3/5/2017.
+ * @Authors: Ayobami Adewale, Abdullah Bilal
+ * @Supervisor Jakob Mass
+ * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
+ * University of Tartu, Spring 2017.
  */
-public class Event_Schedules extends AppCompatActivity {
+public class SchedulesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_about_us);
+        setContentView(R.layout.activity_schedules);
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 

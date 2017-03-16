@@ -6,15 +6,19 @@ import android.view.MenuItem;
 
 import ee.ut.demo.R;
 
-
-public class Sponsors extends AppCompatActivity {
+/**
+ * @Authors: Ayobami Adewale, Abdullah Bilal
+ * @Supervisor Jakob Mass
+ * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
+ * University of Tartu, Spring 2017.
+ */
+public class SponsorsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_sponsors);
-
     }
 
     @Override

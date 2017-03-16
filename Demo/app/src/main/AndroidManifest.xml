@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.Home"
+            android:name=".activity.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,11 +24,11 @@
             android:name=".activity.AboutUsActivity"
             android:label="@string/activity_title_about_us" />
         <activity
-            android:name=".activity.Sponsors"
+            android:name=".activity.SponsorsActivity"
             android:label="@string/activity_title_sponsors" />
-        <activity android:name=".activity.Event_Schedules"
+        <activity android:name=".activity.EventsActivity"
             android:label="@string/activity_title_event_schedules" />
-        <activity android:name=".activity.Personal_Schedules"
+        <activity android:name=".activity.SchedulesActivity"
             android:label="@string/activity_title_personal_schedules" />
     </application>
 

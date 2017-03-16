@@ -11,12 +11,10 @@ import android.view.ViewGroup;
 import ee.ut.demo.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * @Authors: Ayobami Adewale, Abdullah Bilal
+ * @Supervisor Jakob Mass
+ * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
+ * University of Tartu, Spring 2017.
  */
 public class MapFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
