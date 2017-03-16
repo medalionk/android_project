@@ -14,7 +14,7 @@
     <string name="map">Map</string>
     <string name="settings">Settings</string>
     <string name="about_us">About Us</string>
-    <string name="playlist">PlayList</string>
+    <string name="playlist">Playlist</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="home_menu">
