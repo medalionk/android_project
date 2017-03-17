@@ -8,24 +8,41 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import ee.ut.demo.R;
+import ee.ut.demo.data.ExpandableListDataPump;
+import ee.ut.demo.mvp.model.Event;
 
 /**
  * @Source: http://www.journaldev.com/9942/android-expandablelistview-example-tutorial
  */
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
+
     private Context mContext;
     private List<String> mExpandableListTitle;
     private HashMap<String, List<String>> mExpandableListDetail;
+    private List<Event> events = new ArrayList<>();
 
-    public CustomExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<String>> expandableListDetail) {
+    public CustomExpandableListAdapter(Context context) {
         mContext = context;
-        mExpandableListTitle = expandableListTitle;
-        mExpandableListDetail = expandableListDetail;
+        //mExpandableListTitle = new ArrayList<>();
+        //mExpandableListDetail = new HashMap<>();
+        mExpandableListDetail = ExpandableListDataPump.getData();
+        mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
+    }
+
+    public void addAll(Collection<Event> events) {
+        this.events.addAll(events);
+        notifyDataSetChanged();
+    }
+
+    public void add(Event event) {
+        this.events.add(event);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -42,12 +59,14 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
+
         final String expandedListText = (String) getChild(listPosition, expandedListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.expanded_list, null);
         }
+
         TextView expandedListTextView = (TextView) convertView
                 .findViewById(R.id.expanded_list_item);
         expandedListTextView.setText(expandedListText);

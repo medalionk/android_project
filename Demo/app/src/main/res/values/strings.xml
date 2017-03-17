@@ -36,4 +36,7 @@
     <string name="sponsors">Our Sponsors</string>
 
     <string name="hello_blank_fragment">Blank</string>
+
+    <string name="error_loading">Error Loading Data</string>
+    <string name="events_loading">Events Loading!!!</string>
 </resources>
