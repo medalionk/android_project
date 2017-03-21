@@ -31,6 +31,13 @@
             android:label="@string/activity_title_event_schedules" />
         <activity android:name=".activity.ScheduleActivity"
             android:label="@string/activity_title_personal_schedules" />
+
+        <receiver android:name=".other.NotificationReceiver">
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

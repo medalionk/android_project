@@ -1,5 +1,8 @@
 package ee.ut.demo.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,11 +15,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 import ee.ut.demo.R;
 import ee.ut.demo.fragment.HomeFragment;
@@ -71,7 +77,7 @@ SettingFragment.OnFragmentInteractionListener{
 
         mActivityTitles = getResources().getStringArray(R.array.home_menu);
         loadNavHeader();
-
+        loadAlarm();
         setUpNavigationView();
 
         if (savedInstanceState == null) {
@@ -82,7 +88,7 @@ SettingFragment.OnFragmentInteractionListener{
     }
 
     private void loadNavHeader() {
-        mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.tartu));
+        mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.header1));
     }
 
     /***
@@ -290,6 +296,31 @@ SettingFragment.OnFragmentInteractionListener{
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void loadAlarm() {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
+        notificationIntent.addCategory("android.intent.category.DEFAULT");
+
+        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Calendar notification_time = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+        notification_time.set(Calendar.HOUR_OF_DAY,8);
+        notification_time.set(Calendar.MINUTE, 00);
+        notification_time.set(Calendar.SECOND, 0);
+
+        if (now.after(notification_time)) {
+            Log.d("notification","Day incremented by one");
+            notification_time.add(Calendar.DATE, 1);
+        }
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+        //TODO (a call to DB to retrieve the event date and compare the current date to the date retrieved. If same, then notify the app user)
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,notification_time.getTimeInMillis(), broadcast);
     }
 
     @Override
