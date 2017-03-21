@@ -8,4 +8,5 @@ public interface EventsView extends View {
     void showEvents(List<Event> events);
     void showLoading();
     void showError();
+    void showEmpty();
 }

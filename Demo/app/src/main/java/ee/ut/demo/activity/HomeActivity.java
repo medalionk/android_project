@@ -1,10 +1,15 @@
 package ee.ut.demo.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -39,6 +44,7 @@ SettingFragment.OnFragmentInteractionListener{
     private static final String TAG_MAP = "map";
     private static final String TAG_NOTIFICATIONS = "notifications";
     private static final String TAG_SETTINGS = "settings";
+    private final int PERMISSIONS_REQUEST = 0;
 
     public static String CURRENT_TAG = TAG_HOME;
     public static int mNavItemIndex = 0;
@@ -54,6 +60,7 @@ SettingFragment.OnFragmentInteractionListener{
     private boolean mShouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +86,37 @@ SettingFragment.OnFragmentInteractionListener{
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
+
+        requestPermission();
     }
 
     private void loadNavHeader() {
         mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.tartu));
+    }
+
+    /**
+     * Request user's permission to get location
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[] {Manifest.permission.INTERNET}, PERMISSIONS_REQUEST);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                }else {
+                    Toast.makeText(getApplicationContext(), "Internet Permission Required", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     /***

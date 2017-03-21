@@ -15,6 +15,8 @@ public class EventsPresenter implements Presenter<EventsView>{
     private Subscription getEventsSubscription;
     private EventsView eventsView;
     private FetchEvents fetchEvents;
+    private List<Event> mEvents;
+    private int mDate;
 
     public EventsPresenter(FetchEvents fetchEvents) {
         this.fetchEvents = fetchEvents;
@@ -27,7 +29,7 @@ public class EventsPresenter implements Presenter<EventsView>{
 
     @Override
     public void onStart() {
-
+        getEvents();
     }
 
     @Override
@@ -42,15 +44,23 @@ public class EventsPresenter implements Presenter<EventsView>{
 
     }
 
+    public void setEventDate(int date){
+        mDate = date;
+    }
+
     @Override
     public void attachView(EventsView view) {
         this.eventsView = view;
-        getEvents();
     }
 
     private void getEvents() {
-        eventsView.showLoading();
+        if (mEvents != null && mEvents.size() > 0) {
+            eventsView.showEvents(mEvents);
+        } else {
+            eventsView.showLoading();
+        }
 
+        fetchEvents.setEventDate(mDate);
         getEventsSubscription = fetchEvents.execute()
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, List<Event>>() {
@@ -65,13 +75,19 @@ public class EventsPresenter implements Presenter<EventsView>{
                     @Override
                     public void call(List<Event> events) {
                         if (events != null) {
-                            eventsView.showEvents(events);
+                            if (events != null && events.size() > 0) {
+                                mEvents = events;
+                                eventsView.showEvents(events);
+                            } else {
+                                eventsView.showEmpty();
+                            }
                         }
                     }
                 });
     }
 
     public void onRefresh() {
+        mEvents = null;
         getEvents();
     }
 }

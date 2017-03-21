@@ -34,7 +34,7 @@
             android:layout_marginRight="5dp"
             android:layout_weight="2">
             <TextView
-                android:id="@+id/listTitle"
+                android:id="@+id/eventTitleGrp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="left"
@@ -43,6 +43,7 @@
                 android:maxWidth="120dp"
                 android:text="Hitmanhhhhhhhhhhhhhhhhhh" />
             <TextView
+                android:id="@+id/eventTimeGrp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -52,6 +53,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/eventLocationGrp"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -60,6 +62,7 @@
             android:textSize="20dp"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/eventTicketGrp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"

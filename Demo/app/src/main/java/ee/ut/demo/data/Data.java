@@ -12,15 +12,16 @@ import ee.ut.demo.mvp.model.Event;
  */
 
 public class Data {
+    final static String imagePath1 = "http://media.voog.com/0000/0035/5433/photos/16665354_10154334984057671_8397631405729005191_o.jpg";
     public static List<Event> getDummyData() {
         List<Event> events = new ArrayList<>();
 
         events.add(
                 new Event.Builder("Hitman")
                 .id(1).location("Tartu").ticket("Free")
-                .time("00:00-00:00").path("/students")
+                .time("02:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath("http://i.imgur.com/DvpvklR.png")
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -28,16 +29,16 @@ public class Data {
                 .id(2).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
         events.add(
                 new Event.Builder("Avarongkäik")
                 .id(3).location("Tartu").ticket("Free")
-                .time("00:00-00:00").path("/students")
+                .time("10:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -45,16 +46,16 @@ public class Data {
                 .id(4).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
         events.add(
                 new Event.Builder("Kastironimise eelvoor")
                 .id(5).location("Tartu").ticket("Free")
-                .time("00:00-00:00").path("/students")
+                .time("03:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -63,7 +64,7 @@ public class Data {
                 .id(6).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -72,7 +73,7 @@ public class Data {
                 .id(7).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -81,7 +82,7 @@ public class Data {
                 .id(8).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 
@@ -90,7 +91,7 @@ public class Data {
                 .id(9).location("Tartu").ticket("Free")
                 .time("00:00-00:00").path("/students")
                 .details(new Details.Builder("Tartu Event")
-                        .additionalInfo("Info").imagePath("path")
+                        .additionalInfo("Info").imagePath(imagePath1)
                         .organizer("Organizer").songBook("Songbook").build())
                 .build());
 

@@ -8,6 +8,11 @@ import rx.Observable;
 
 public class FetchEvents implements Usecase<List<Event>>{
     private Repository repository;
+    private int mDate;
+
+    public void setEventDate(int date){
+        mDate = date;
+    }
 
     public FetchEvents(Repository repository) {
         this.repository = repository;
@@ -15,6 +20,6 @@ public class FetchEvents implements Usecase<List<Event>>{
 
     @Override
     public Observable<List<Event>> execute() {
-        return repository.getEvents().map(new ResponseMappingFunc<List<Event>>());
+        return repository.getEvents(mDate).map(new ResponseMappingFunc<List<Event>>());
     }
 }

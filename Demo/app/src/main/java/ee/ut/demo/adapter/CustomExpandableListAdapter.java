@@ -1,54 +1,78 @@
 package ee.ut.demo.adapter;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ee.ut.demo.R;
-import ee.ut.demo.data.ExpandableListDataPump;
 import ee.ut.demo.mvp.model.Event;
 
-/**
- * @Source: http://www.journaldev.com/9942/android-expandablelistview-example-tutorial
- */
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
+    @Bind(R.id.eventTitle)
+    TextView titleView;
+
+    @Bind(R.id.eventTime)
+    TextView timeView;
+
+    @Bind(R.id.eventLocation)
+    TextView locationView;
+
+    @Bind(R.id.eventOrganizer)
+    TextView organizerView;
+
+    @Bind(R.id.eventInfo)
+    TextView eventInfoView;
+
+    @Bind(R.id.eventImage)
+    ImageView imageView;
+
     private Context mContext;
-    private List<String> mExpandableListTitle;
-    private HashMap<String, List<String>> mExpandableListDetail;
-    private List<Event> events = new ArrayList<>();
+    private List<Event> mEvents;
 
     public CustomExpandableListAdapter(Context context) {
         mContext = context;
-        //mExpandableListTitle = new ArrayList<>();
-        //mExpandableListDetail = new HashMap<>();
-        mExpandableListDetail = ExpandableListDataPump.getData();
-        mExpandableListTitle = new ArrayList<>(mExpandableListDetail.keySet());
+        mEvents = new ArrayList<>();
     }
 
     public void addAll(Collection<Event> events) {
-        this.events.addAll(events);
+        this.mEvents.addAll(events);
         notifyDataSetChanged();
     }
 
     public void add(Event event) {
-        this.events.add(event);
+        this.mEvents.add(event);
+        notifyDataSetChanged();
+    }
+
+    public void replaceEvents(Collection<Event> events) {
+        mEvents.clear();
+        mEvents.addAll(events);
         notifyDataSetChanged();
     }
 
     @Override
+    public void registerDataSetObserver(DataSetObserver observer) {
+        super.registerDataSetObserver(observer);
+    }
+
+    @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return mExpandableListDetail.get(mExpandableListTitle.get(listPosition))
-                .get(expandedListPosition);
+        return mEvents.get(listPosition);
     }
 
     @Override
@@ -56,37 +80,50 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return expandedListPosition;
     }
 
+
+
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String expandedListText = (String) getChild(listPosition, expandedListPosition);
+        final Event event = (Event) getChild(listPosition, expandedListPosition);
+
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.expanded_list, null);
         }
 
-        TextView expandedListTextView = (TextView) convertView
-                .findViewById(R.id.expanded_list_item);
-        expandedListTextView.setText(expandedListText);
+        ButterKnife.bind(this,convertView);
+
+        titleView.setText(event.getTitle());
+        timeView.setText(event.getTime());
+        locationView.setText(event.getLocation());
+        organizerView.setText(event.getDetails().getOrganizer());
+        eventInfoView.setText(event.getDetails().getAdditionalInfo());
+
+        Picasso.with(mContext)
+                .load(event.getDetails().getImagePath())
+                .fit()
+                .centerCrop()
+                .into(imageView);
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int listPosition) {
-        return mExpandableListDetail.get(mExpandableListTitle.get(listPosition))
-                .size();
+        return 1;
     }
 
     @Override
     public Object getGroup(int listPosition) {
-        return mExpandableListTitle.get(listPosition);
+        return mEvents.get(listPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return mExpandableListTitle.size();
+        return mEvents.size();
     }
 
     @Override
@@ -97,7 +134,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int listPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        String listTitle = (String) getGroup(listPosition);
+
+        Event event = (Event) getGroup(listPosition);
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext.
@@ -105,10 +143,15 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = layoutInflater.inflate(R.layout.list_group, null);
         }
 
-        TextView listTitleTextView = (TextView) convertView
-                .findViewById(R.id.listTitle);
-        listTitleTextView.setTypeface(null, Typeface.BOLD);
-        listTitleTextView.setText(listTitle);
+        TextView titleView = (TextView) convertView.findViewById(R.id.eventTitleGrp);
+        titleView.setTypeface(null, Typeface.BOLD);
+        titleView.setText(event.getTitle());
+
+        TextView titleTime = (TextView) convertView.findViewById(R.id.eventTimeGrp);
+        titleTime.setText(event.getTime());
+
+        TextView titleLocation = (TextView) convertView.findViewById(R.id.eventLocationGrp);
+        titleLocation.setText(event.getLocation());
 
         return convertView;
     }

@@ -17,7 +17,7 @@ public class RestRepository implements Repository {
     }
 
     @Override
-    public Observable<ResponseWrapper<List<Event>>> getEvents() {
+    public Observable<ResponseWrapper<List<Event>>> getEvents(int date) {
         return apiService.getEvents();
     }
 }

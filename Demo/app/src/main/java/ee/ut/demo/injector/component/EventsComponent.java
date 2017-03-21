@@ -4,8 +4,7 @@ import android.content.Context;
 
 import dagger.Component;
 import ee.ut.demo.activity.EventsActivity;
-import ee.ut.demo.activity.ScheduleActivity;
-import ee.ut.demo.fragment.ExpandableListFragment;
+import ee.ut.demo.fragment.EventFragment;
 import ee.ut.demo.injector.module.ActivityModule;
 import ee.ut.demo.injector.module.EventsModule;
 import ee.ut.demo.injector.scope.PerActivity;
@@ -15,6 +14,6 @@ import ee.ut.demo.injector.scope.PerActivity;
 public interface EventsComponent  {
 
     void inject(EventsActivity eventsActivity);
-    void inject(ExpandableListFragment listFragment);
+    void inject(EventFragment listFragment);
     Context context();
 }

@@ -7,5 +7,5 @@ import ee.ut.demo.mvp.model.ResponseWrapper;
 import rx.Observable;
 
 public interface Repository {
-    Observable<ResponseWrapper<List<Event>>> getEvents();
+    Observable<ResponseWrapper<List<Event>>> getEvents(int date);
 }
