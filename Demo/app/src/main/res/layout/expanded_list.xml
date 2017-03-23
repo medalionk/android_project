@@ -97,7 +97,6 @@
                     android:text="Ingel-Brit Parmas, ingel.parmas@gmail.com"
                     android:textSize="15dp" />
             </LinearLayout>
-
             <ImageView
                 android:id="@+id/eventImage"
                 android:layout_width="300dp"
@@ -107,21 +106,5 @@
                 android:gravity="right"
                 android:src="@drawable/pic1" />
         </LinearLayout>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="Reglement"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:gravity="center"
-            android:padding="10dp"
-            android:textColor="#ffffff"
-            android:background="@drawable/button_style"/>
     </LinearLayout>
-
 </LinearLayout>

@@ -226,7 +226,6 @@ SettingFragment.OnFragmentInteractionListener{
                         return true;
 
                     case R.id.personal_Schedules:
-                        Toast.makeText(getApplicationContext(), "Personal Schedules Clicked(not created)", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(HomeActivity.this,ScheduleActivity.class));
                         mDrawer.closeDrawers();
                         return true;

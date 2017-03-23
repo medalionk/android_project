@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.adapter.CustomExpandableListAdapter;
+import ee.ut.demo.adapter.ExpandableListListener;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerEventsComponent;
 import ee.ut.demo.injector.component.EventsComponent;
@@ -34,7 +35,7 @@ import ee.ut.demo.mvp.view.EventsView;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class EventFragment extends Fragment implements EventsView {
+public class EventFragment extends Fragment implements EventsView, ExpandableListListener {
 
     @Inject
     EventsPresenter mEventsPresenter;
@@ -122,6 +123,8 @@ public class EventFragment extends Fragment implements EventsView {
 
     private void initListView() {
         mExpandableListView.setAdapter(mExpandableListAdapter);
+        mExpandableListAdapter.setExpandableListListener(this);
+
         mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
@@ -146,7 +149,6 @@ public class EventFragment extends Fragment implements EventsView {
 
     private void initPresenter() {
         mEventsPresenter.attachView(this);
-        mEventsPresenter.setEventDate(mDate);
     }
 
     @Override
@@ -171,7 +173,7 @@ public class EventFragment extends Fragment implements EventsView {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                //mEmptyListView.setVisibility(View.GONE);
+                mEmptyListView.setVisibility(View.GONE);
                 mRefreshLayout.setRefreshing(false);
                 mLoadingView.setVisibility(View.GONE);
                 mExpandableListView.setVisibility(View.VISIBLE);
@@ -225,5 +227,16 @@ public class EventFragment extends Fragment implements EventsView {
             }
         };
         getActivity().runOnUiThread(myRunnable);
+    }
+
+    @Override
+    public void setFavouriteEvent(int id) {
+        mEventsPresenter.setFavourite(id);
+        mEventsPresenter.onRefresh();
+    }
+
+    @Override
+    public void unsetFavouriteEvent(int id) {
+
     }
 }

@@ -2,7 +2,9 @@ package ee.ut.demo.mvp.presenter;
 
 import java.util.List;
 
-import ee.ut.demo.mvp.domain.FetchEvents;
+import ee.ut.demo.mvp.domain.repository.DatabaseRepository;
+import ee.ut.demo.mvp.domain.repository.Repository;
+import ee.ut.demo.mvp.domain.repository.ResponseMappingFunc;
 import ee.ut.demo.mvp.model.Event;
 import ee.ut.demo.mvp.view.EventsView;
 import rx.Subscription;
@@ -12,30 +14,33 @@ import rx.schedulers.Schedulers;
 
 public class EventsPresenter implements Presenter<EventsView>{
 
-    private Subscription getEventsSubscription;
-    private EventsView eventsView;
-    private FetchEvents fetchEvents;
+    private Subscription mGetEventsSubscription;
+    private EventsView mEventsView;
     private List<Event> mEvents;
-    private int mDate;
+    private DatabaseRepository mDbRepo;
+    private Repository mRestRepo;
+    private int mPage;
 
-    public EventsPresenter(FetchEvents fetchEvents) {
-        this.fetchEvents = fetchEvents;
+
+    public EventsPresenter(Repository restRepo, DatabaseRepository dbRepo) {
+        mRestRepo = restRepo;
+        mDbRepo = dbRepo;
     }
 
     @Override
     public void onCreate() {
-
-    }
-
-    @Override
-    public void onStart() {
         getEvents();
     }
 
     @Override
+    public void onStart() {
+        getEventsByPage(0);
+    }
+
+    @Override
     public void onStop() {
-        if (getEventsSubscription != null && !getEventsSubscription.isUnsubscribed()) {
-            getEventsSubscription.unsubscribe();
+        if (mGetEventsSubscription != null && !mGetEventsSubscription.isUnsubscribed()) {
+            mGetEventsSubscription.unsubscribe();
         }
     }
 
@@ -44,50 +49,128 @@ public class EventsPresenter implements Presenter<EventsView>{
 
     }
 
-    public void setEventDate(int date){
-        mDate = date;
-    }
-
     @Override
     public void attachView(EventsView view) {
-        this.eventsView = view;
+        this.mEventsView = view;
+    }
+
+    public void setPage(int page){
+        mPage = page;
     }
 
     private void getEvents() {
-        if (mEvents != null && mEvents.size() > 0) {
-            eventsView.showEvents(mEvents);
-        } else {
-            eventsView.showLoading();
-        }
 
-        fetchEvents.setEventDate(mDate);
-        getEventsSubscription = fetchEvents.execute()
+        //mEventsView.showLoading();
+        mGetEventsSubscription = mRestRepo.getEvents().map(new ResponseMappingFunc<List<Event>>())
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, List<Event>>() {
                     @Override
                     public List<Event> call(Throwable throwable) {
                         throwable.printStackTrace();
-                        eventsView.showError();
+                        mEventsView.showError();
                         return null;
                     }
                 })
                 .subscribe(new Action1<List<Event>>() {
                     @Override
                     public void call(List<Event> events) {
-                        if (events != null) {
-                            if (events != null && events.size() > 0) {
-                                mEvents = events;
-                                eventsView.showEvents(events);
-                            } else {
-                                eventsView.showEmpty();
-                            }
+                        addEvents(events);
+                        // TODO rewrite
+                        if (events != null && events.size() > 0) {
+                            mEvents = events;
+                            mEventsView.showEvents(events);
+                        }else {
+                            mEventsView.showEmpty();
                         }
+                    }
+                });
+    }
+
+    void getEventsByPage(int page){
+
+        mEventsView.showLoading();
+        mGetEventsSubscription = mDbRepo.getEventsByPage(page)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(new Func1<Throwable, List<Event>>() {
+                    @Override
+                    public List<Event> call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mEventsView.showError();
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<List<Event>>() {
+                    @Override
+                    public void call(List<Event> events) {
+                        if (events != null&& events.size() > 0) {
+                            mEvents = events;
+                            mEventsView.showEvents(events);
+                        }else {
+                            mEventsView.showEmpty();
+                        }
+                    }
+                });
+    }
+
+    public void setFavourite(int id){
+        mGetEventsSubscription = mDbRepo.setFavourite(id)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(new Func1<Throwable, Integer>() {
+                    @Override
+                    public Integer call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mEventsView.showError();
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer result) {
+
+                    }
+                });
+    }
+
+    public void unSetFavourite(int id){
+        mGetEventsSubscription = mDbRepo.unsetFavourite(id)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(new Func1<Throwable, Integer>() {
+                    @Override
+                    public Integer call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mEventsView.showError();
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer result) {
+                        // TODO rewrite
+                    }
+                });
+    }
+
+    void addEvents(List<Event> events){
+        mGetEventsSubscription = mDbRepo.addEvents(events)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(new Func1<Throwable, Integer>() {
+                    @Override
+                    public Integer call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mEventsView.showError();
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer result) {
+
                     }
                 });
     }
 
     public void onRefresh() {
         mEvents = null;
-        getEvents();
+        getEventsByPage(0);
     }
 }

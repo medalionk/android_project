@@ -41,12 +41,17 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Bind(R.id.eventImage)
     ImageView imageView;
 
+    private static ExpandableListListener mListener;
     private Context mContext;
     private List<Event> mEvents;
 
     public CustomExpandableListAdapter(Context context) {
         mContext = context;
         mEvents = new ArrayList<>();
+    }
+
+    public void setExpandableListListener(ExpandableListListener listener){
+        mListener = listener;
     }
 
     public void addAll(Collection<Event> events) {
@@ -80,8 +85,6 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         return expandedListPosition;
     }
 
-
-
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
@@ -103,7 +106,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         eventInfoView.setText(event.getDetails().getAdditionalInfo());
 
         Picasso.with(mContext)
-                .load(event.getDetails().getImagePath())
+                .load(event.getDetails().getImageUrl())
                 .fit()
                 .centerCrop()
                 .into(imageView);
@@ -132,10 +135,10 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int listPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+    public View getGroupView(final int listPosition, final boolean isExpanded,
+                             View convertView, final ViewGroup parent) {
 
-        Event event = (Event) getGroup(listPosition);
+        final Event event = (Event) getGroup(listPosition);
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) mContext.
@@ -150,8 +153,17 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         TextView titleTime = (TextView) convertView.findViewById(R.id.eventTimeGrp);
         titleTime.setText(event.getTime());
 
-        TextView titleLocation = (TextView) convertView.findViewById(R.id.eventLocationGrp);
-        titleLocation.setText(event.getLocation());
+        int imgResourceId = event.isFavorite() ? R.mipmap.on_selected : R.mipmap.off_selected;
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.favorite);
+
+        imageView.setImageResource(imgResourceId);
+        imageView.setOnClickListener(new View.OnClickListener(){
+            int id = event.getId();
+            @Override
+            public void onClick(View v){
+                mListener.setFavouriteEvent(id);
+            }
+        });
 
         return convertView;
     }
