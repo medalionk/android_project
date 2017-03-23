@@ -9,14 +9,14 @@ public class Details {
     private final String organizer;
     private final String additionalInfo;
     private final String songBook;
-    private final String imagePath;
+    private final String imageUrl;
 
     private Details(Builder builder){
         description = builder.description;
         organizer = builder.organizer;
         additionalInfo = builder.additionalInfo;
         songBook = builder.songBook;
-        imagePath = builder.imagePath;
+        imageUrl = builder.imageUrl;
     }
 
     public String getDescription() {
@@ -35,22 +35,25 @@ public class Details {
         return songBook;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public static class Builder{
-        // Required parameters
-        private final String description;
 
-        // Optional parameters
+        private String description;
         private String organizer;
         private String additionalInfo;
         private String songBook;
-        private String imagePath;
+        private String imageUrl;
 
-        public Builder (String description){
+        public Builder (){
+
+        }
+
+        public Builder description(String description){
             this.description = description;
+            return this;
         }
 
         public Builder organizer(String organizer){
@@ -68,8 +71,8 @@ public class Details {
             return this;
         }
 
-        public Builder imagePath(String imagePath){
-            this.imagePath = imagePath;
+        public Builder imageUrl(String imageUrl){
+            this.imageUrl = imageUrl;
             return this;
         }
 

@@ -1,4 +1,4 @@
-package ee.ut.demo.mvp.domain;
+package ee.ut.demo.mvp.domain.repository;
 
 import ee.ut.demo.mvp.model.ResponseWrapper;
 import rx.functions.Func1;
