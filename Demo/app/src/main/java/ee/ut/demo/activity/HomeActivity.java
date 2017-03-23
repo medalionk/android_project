@@ -309,15 +309,15 @@ SettingFragment.OnFragmentInteractionListener{
 
         Calendar notification_time = Calendar.getInstance();
         Calendar now = Calendar.getInstance();
-        notification_time.set(Calendar.HOUR_OF_DAY,8);
-        notification_time.set(Calendar.MINUTE, 00);
+        notification_time.set(Calendar.HOUR_OF_DAY,14);
+        notification_time.set(Calendar.MINUTE, 48);
         notification_time.set(Calendar.SECOND, 0);
 
         if (now.after(notification_time)) {
             Log.d("notification","Day incremented by one");
             notification_time.add(Calendar.DATE, 1);
         }
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+
         //TODO (a call to DB to retrieve the event date and compare the current date to the date retrieved. If same, then notify the app user)
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,notification_time.getTimeInMillis(), broadcast);
