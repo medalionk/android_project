@@ -37,6 +37,12 @@
 
     <string name="hello_blank_fragment">Blank</string>
 
-    <string name="error_loading">Error Loading Data</string>
-    <string name="events_loading">Events Loading!!!</string>
+    <string name="loading_error">Error Loading Events</string>
+    <string name="events_loading">Loading!!!</string>
+    <string name="no_event">No Events</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_remove_favourite">Remove From Favourite</string>
+    <string name="title_favourite">Saved Events</string>
+
 </resources>

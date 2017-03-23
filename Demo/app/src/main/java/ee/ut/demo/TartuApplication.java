@@ -3,8 +3,8 @@ package ee.ut.demo;
 import android.app.Application;
 
 import ee.ut.demo.injector.component.ApplicationComponent;
-import ee.ut.demo.injector.module.ApplicationModule;
 import ee.ut.demo.injector.component.DaggerApplicationComponent;
+import ee.ut.demo.injector.module.ApplicationModule;
 
 public class TartuApplication extends Application {
     private ApplicationComponent applicationComponent;

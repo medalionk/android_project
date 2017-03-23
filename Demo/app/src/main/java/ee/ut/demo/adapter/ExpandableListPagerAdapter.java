@@ -1,11 +1,10 @@
 package ee.ut.demo.adapter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import ee.ut.demo.fragment.ExpandableListFragment;
+import ee.ut.demo.fragment.EventFragment;
 
 /**
  * @Authors: Ayobami Adewale, Abdullah Bilal
@@ -20,17 +19,15 @@ public class ExpandableListPagerAdapter extends FragmentStatePagerAdapter {
     private final int START_INDEX = 24;
     private final int PAGE_COUNT = 7;
 
+    private int mDate;
+
     public ExpandableListPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int i) {
-        Fragment fragment = new ExpandableListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ExpandableListFragment.ARG_OBJECT, i + START_INDEX);
-        fragment.setArguments(args);
-        return fragment;
+        return EventFragment.newInstance(mDate);
     }
 
     @Override
@@ -40,6 +37,7 @@ public class ExpandableListPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "" + (position + START_INDEX) + " " + MONTH_TEXT;
+        mDate = position + START_INDEX;
+        return mDate + " " + MONTH_TEXT;
     }
 }

@@ -1,4 +1,4 @@
-package ee.ut.demo.rest;
+package ee.ut.demo.mvp.domain.repository;
 
 import java.util.List;
 

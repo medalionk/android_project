@@ -6,7 +6,10 @@ public class Event {
     private final String title;
     private final String location;
     private final String ticket;
-    private final String path;
+    private final String url;
+
+
+    private final boolean favorite;
     private final Details details;
 
     private Event(Builder builder){
@@ -15,7 +18,8 @@ public class Event {
         title = builder.title;
         location = builder.location;
         ticket = builder.ticket;
-        path = builder.path;
+        url = builder.url;
+        favorite = builder.favorite;
         details = builder.details;
     }
 
@@ -39,8 +43,12 @@ public class Event {
         return ticket;
     }
 
-    public String getPath() {
-        return path;
+    public String getUrl() {
+        return url;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
     }
 
     public Details getDetails() {
@@ -56,7 +64,8 @@ public class Event {
         private String time;
         private String location;
         private String ticket;
-        private String path;
+        private String url;
+        private boolean favorite;
         private Details details;
 
         public Builder (String title){
@@ -83,8 +92,13 @@ public class Event {
             return this;
         }
 
-        public Builder path(String path){
-            this.path = path;
+        public Builder url(String url){
+            this.url = url;
+            return this;
+        }
+
+        public Builder favorite(int favorite){
+            this.favorite = favorite == 1;
             return this;
         }
 

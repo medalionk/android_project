@@ -4,8 +4,12 @@ import java.util.List;
 
 import ee.ut.demo.mvp.model.Event;
 
-public interface EventsView extends View {
-    void showEvents(List<Event> events);
+/**
+ * Created by Bilal Abdullah on 3/23/2017.
+ */
+
+public interface FavouriteEventsView extends View {
+    void showFavouriteEvents(List<Event> events);
     void showLoading();
     void showError();
     void showEmpty();
