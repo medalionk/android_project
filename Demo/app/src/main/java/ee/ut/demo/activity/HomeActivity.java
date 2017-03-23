@@ -1,13 +1,15 @@
 package ee.ut.demo.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,14 +17,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.util.Calendar;
 
 import ee.ut.demo.R;
 import ee.ut.demo.fragment.HomeFragment;
@@ -45,6 +44,7 @@ SettingFragment.OnFragmentInteractionListener{
     private static final String TAG_MAP = "map";
     private static final String TAG_NOTIFICATIONS = "notifications";
     private static final String TAG_SETTINGS = "settings";
+    private final int PERMISSIONS_REQUEST = 0;
 
     public static String CURRENT_TAG = TAG_HOME;
     public static int mNavItemIndex = 0;
@@ -60,6 +60,7 @@ SettingFragment.OnFragmentInteractionListener{
     private boolean mShouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,7 @@ SettingFragment.OnFragmentInteractionListener{
 
         mActivityTitles = getResources().getStringArray(R.array.home_menu);
         loadNavHeader();
-        loadAlarm();
+
         setUpNavigationView();
 
         if (savedInstanceState == null) {
@@ -85,10 +86,37 @@ SettingFragment.OnFragmentInteractionListener{
             CURRENT_TAG = TAG_HOME;
             loadHomeFragment();
         }
+
+        requestPermission();
     }
 
     private void loadNavHeader() {
-        mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.header1));
+        mImgNavHeaderBg.setImageDrawable(getDrawable(R.drawable.tartu));
+    }
+
+    /**
+     * Request user's permission to get location
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[] {Manifest.permission.INTERNET}, PERMISSIONS_REQUEST);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                }else {
+                    Toast.makeText(getApplicationContext(), "Internet Permission Required", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     /***
@@ -198,7 +226,6 @@ SettingFragment.OnFragmentInteractionListener{
                         return true;
 
                     case R.id.personal_Schedules:
-                        Toast.makeText(getApplicationContext(), "Personal Schedules Clicked(not created)", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(HomeActivity.this,ScheduleActivity.class));
                         mDrawer.closeDrawers();
                         return true;
@@ -296,31 +323,6 @@ SettingFragment.OnFragmentInteractionListener{
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void loadAlarm() {
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-        notificationIntent.addCategory("android.intent.category.DEFAULT");
-
-        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar notification_time = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        notification_time.set(Calendar.HOUR_OF_DAY,8);
-        notification_time.set(Calendar.MINUTE, 00);
-        notification_time.set(Calendar.SECOND, 0);
-
-        if (now.after(notification_time)) {
-            Log.d("notification","Day incremented by one");
-            notification_time.add(Calendar.DATE, 1);
-        }
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-        //TODO (a call to DB to retrieve the event date and compare the current date to the date retrieved. If same, then notify the app user)
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,notification_time.getTimeInMillis(), broadcast);
     }
 
     @Override
