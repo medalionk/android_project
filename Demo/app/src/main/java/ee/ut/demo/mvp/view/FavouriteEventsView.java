@@ -10,7 +10,4 @@ import ee.ut.demo.mvp.model.Event;
 
 public interface FavouriteEventsView extends View {
     void showFavouriteEvents(List<Event> events);
-    void showLoading();
-    void showError();
-    void showEmpty();
 }

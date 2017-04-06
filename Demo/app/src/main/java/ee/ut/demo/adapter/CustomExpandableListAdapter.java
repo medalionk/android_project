@@ -3,6 +3,7 @@ package ee.ut.demo.adapter;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
+import ee.ut.demo.helpers.Parse;
 import ee.ut.demo.mvp.model.Event;
 
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
@@ -38,10 +40,13 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Bind(R.id.eventInfo)
     TextView eventInfoView;
 
+    @Bind(R.id.eventUrl)
+    TextView urlView;
+
     @Bind(R.id.eventImage)
     ImageView imageView;
 
-    private static ExpandableListListener mListener;
+    private static FavoriteListener mListener;
     private Context mContext;
     private List<Event> mEvents;
 
@@ -50,7 +55,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         mEvents = new ArrayList<>();
     }
 
-    public void setExpandableListListener(ExpandableListListener listener){
+    public void setFavoriteListener(FavoriteListener listener){
         mListener = listener;
     }
 
@@ -65,9 +70,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     public void replaceEvents(Collection<Event> events) {
+
         mEvents.clear();
         mEvents.addAll(events);
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -100,13 +107,20 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         ButterKnife.bind(this,convertView);
 
         titleView.setText(event.getTitle());
-        timeView.setText(event.getTime());
+        timeView.setText(event.getStartTime() + "-" + event.getEndTime());
         locationView.setText(event.getLocation());
         organizerView.setText(event.getDetails().getOrganizer());
-        eventInfoView.setText(event.getDetails().getAdditionalInfo());
+
+        String contact = Parse.splitJoinString(event.getDetails().getAdditionalInfo(), ",", "\n");
+        eventInfoView.setText(contact);
+
+        urlView.setMovementMethod(LinkMovementMethod.getInstance());
+        urlView.setText(Parse.fromHtml("<a href=\""+ event.getDetails().getPublicUrl() + "\">"
+                + event.getTitle() + "</a>"));
+        urlView.setClickable(true);
 
         Picasso.with(mContext)
-                .load(event.getDetails().getImageUrl())
+                .load(Parse.imageUrl(event.getDetails().getImageUrl()))
                 .fit()
                 .centerCrop()
                 .into(imageView);
@@ -151,21 +165,32 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         titleView.setText(event.getTitle());
 
         TextView titleTime = (TextView) convertView.findViewById(R.id.eventTimeGrp);
-        titleTime.setText(event.getTime());
+        titleTime.setText(event.getStartTime() + "-" + event.getEndTime());
 
         int imgResourceId = event.isFavorite() ? R.mipmap.on_selected : R.mipmap.off_selected;
         ImageView imageView = (ImageView) convertView.findViewById(R.id.favorite);
 
         imageView.setImageResource(imgResourceId);
         imageView.setOnClickListener(new View.OnClickListener(){
-            int id = event.getId();
+            String id = event.getId();
             @Override
             public void onClick(View v){
-                mListener.setFavouriteEvent(id);
+                mListener.toggleFavourite(id);
+                toggleFavorite(id);
+                notifyDataSetChanged();
             }
         });
 
         return convertView;
+    }
+
+    private void toggleFavorite(String id){
+        for (int i = 0; i < mEvents.size(); i++) {
+            if(mEvents.get(i).getId().equals(id)){
+                mEvents.get(i).setFavorite(!mEvents.get(i).isFavorite());
+                return;
+            }
+        }
     }
 
     @Override

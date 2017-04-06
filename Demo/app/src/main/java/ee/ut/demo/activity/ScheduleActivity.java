@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collection;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
+import ee.ut.demo.adapter.FavoriteListener;
 import ee.ut.demo.adapter.FavouriteAdapter;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerFavoriteEventsComponent;
@@ -41,7 +41,7 @@ import ee.ut.demo.mvp.view.FavouriteEventsView;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class ScheduleActivity extends AppCompatActivity implements FavouriteEventsView {
+public class ScheduleActivity extends AppCompatActivity implements FavouriteEventsView, FavoriteListener {
 
     @Inject
     FavouriteEventsPresenter mEventPresenter;
@@ -87,6 +87,7 @@ public class ScheduleActivity extends AppCompatActivity implements FavouriteEven
     private void initAdapter() {
         if (mAdapter == null) {
             mAdapter = new FavouriteAdapter(this);
+            mAdapter.setFavoriteListener(this);
         }
     }
 
@@ -188,6 +189,11 @@ public class ScheduleActivity extends AppCompatActivity implements FavouriteEven
         });
     }
 
+    @Override
+    public void toggleFavourite(String id) {
+        mEventPresenter.toggleFavourite(id);
+    }
+
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;
@@ -227,6 +233,5 @@ public class ScheduleActivity extends AppCompatActivity implements FavouriteEven
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
-
 
 }

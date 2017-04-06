@@ -6,7 +6,5 @@ import ee.ut.demo.mvp.model.Event;
 
 public interface EventsView extends View {
     void showEvents(List<Event> events);
-    void showLoading();
-    void showError();
-    void showEmpty();
+    void onToggleFavorite(int result);
 }

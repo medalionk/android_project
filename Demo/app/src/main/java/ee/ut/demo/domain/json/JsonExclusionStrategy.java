@@ -1,4 +1,4 @@
-package ee.ut.demo.json;
+package ee.ut.demo.domain.json;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

@@ -1,4 +1,4 @@
-package ee.ut.demo.database;
+package ee.ut.demo.domain.database;
 
 import android.content.Context;
 

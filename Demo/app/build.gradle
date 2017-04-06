@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField 'String', 'apiEndpointUrl', '"http://studentdays.ee/admin/api/"'
+        //buildConfigField 'String', 'apiEndpointUrl', '"http://studentdays.ee/admin/api/elements?page_id=1786519"'
     }
     buildTypes {
         release {

@@ -1,7 +1,8 @@
-package ee.ut.demo.database;
+package ee.ut.demo.domain.database;
 
 import java.util.List;
 
+import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
 import rx.Observable;
 
@@ -10,9 +11,9 @@ import rx.Observable;
  */
 
 public interface Database {
-    Observable<List<Event>> getEvents(int page);
+    Observable<List<Event>> getEventsByPage(int page);
     Observable<List<Event>> getFavouriteEvents();
-    Observable<Integer> setFavourite(int id);
-    Observable<Integer> unsetFavourite(int id);
+    Observable<Integer> toggleFavourite(String id);
     Observable<Integer> addEvents(List<Event> events);
+    Observable<List<Element>> checkUpdateEvents(List<Element> elements);
 }
