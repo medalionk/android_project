@@ -10,6 +10,9 @@ public class Details {
     private final String additionalInfo;
     private final String songBook;
     private final String imageUrl;
+    private final String ticket;
+    private final String publicUrl;
+    private final String date;
 
     private Details(Builder builder){
         description = builder.description;
@@ -17,6 +20,9 @@ public class Details {
         additionalInfo = builder.additionalInfo;
         songBook = builder.songBook;
         imageUrl = builder.imageUrl;
+        ticket = builder.ticket;
+        publicUrl = builder.publicUrl;
+        date = builder.date;
     }
 
     public String getDescription() {
@@ -39,6 +45,18 @@ public class Details {
         return imageUrl;
     }
 
+    public String getTicket() {
+        return ticket;
+    }
+
+    public String getPublicUrl() {
+        return publicUrl;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
     public static class Builder{
 
         private String description;
@@ -46,6 +64,9 @@ public class Details {
         private String additionalInfo;
         private String songBook;
         private String imageUrl;
+        private String ticket;
+        private String publicUrl;
+        private String date;
 
         public Builder (){
 
@@ -73,6 +94,20 @@ public class Details {
 
         public Builder imageUrl(String imageUrl){
             this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder ticket(String ticket){
+            this.ticket = ticket;
+            return this;
+        }
+        public Builder publicUrl(String publicUrl){
+            this.publicUrl = publicUrl;
+            return this;
+        }
+
+        public Builder date(String date){
+            this.date = date;
             return this;
         }
 

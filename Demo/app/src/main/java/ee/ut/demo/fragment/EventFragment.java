@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.adapter.CustomExpandableListAdapter;
-import ee.ut.demo.adapter.ExpandableListListener;
+import ee.ut.demo.adapter.FavoriteListener;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerEventsComponent;
 import ee.ut.demo.injector.component.EventsComponent;
@@ -35,7 +36,7 @@ import ee.ut.demo.mvp.view.EventsView;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class EventFragment extends Fragment implements EventsView, ExpandableListListener {
+public class EventFragment extends Fragment implements EventsView, FavoriteListener {
 
     @Inject
     EventsPresenter mEventsPresenter;
@@ -55,15 +56,15 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
     @Bind(R.id.error)
     View mErrorListView;
 
-    private static final String EVENT_DATE = "event_date";
+    private static final String PAGE = "page_number";
 
     private CustomExpandableListAdapter mExpandableListAdapter;
-    private int mDate;
+    private int mPage = -1;
 
-    public static EventFragment newInstance(int date) {
+    public static EventFragment newInstance(int page) {
         EventFragment roomFragment = new EventFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(EVENT_DATE, date);
+        bundle.putInt(PAGE, page);
         roomFragment.setArguments(bundle);
 
         return roomFragment;
@@ -71,7 +72,7 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(EVENT_DATE, mDate);
+        outState.putInt(PAGE, mPage);
     }
 
     @Override
@@ -92,9 +93,9 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
         initListView();
 
         if (savedInstanceState != null) {
-            mDate = savedInstanceState.getInt(EVENT_DATE);
+            mPage = savedInstanceState.getInt(PAGE);
         } else {
-            mDate = getArguments().getInt(EVENT_DATE);
+            mPage = getArguments().getInt(PAGE);
         }
 
         initPresenter();
@@ -123,7 +124,7 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
 
     private void initListView() {
         mExpandableListView.setAdapter(mExpandableListAdapter);
-        mExpandableListAdapter.setExpandableListListener(this);
+        mExpandableListAdapter.setFavoriteListener(this);
 
         mExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -149,6 +150,7 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
 
     private void initPresenter() {
         mEventsPresenter.attachView(this);
+        mEventsPresenter.setPage(mPage);
     }
 
     @Override
@@ -160,6 +162,8 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
     @Override
     public void onStart() {
         super.onStart();
+        ////
+        //mEventsPresenter.setPage(mPage);
         mEventsPresenter.onStart();
     }
 
@@ -230,13 +234,32 @@ public class EventFragment extends Fragment implements EventsView, ExpandableLis
     }
 
     @Override
-    public void setFavouriteEvent(int id) {
-        mEventsPresenter.setFavourite(id);
-        mEventsPresenter.onRefresh();
+    public void onToggleFavorite(int result) {
+        String message;
+        if (result == 0){
+            message = "Added To Favorites!!!";
+        }else {
+            message = "Removed From Favorites!!!";
+        }
+        makeToast(message);
+        //Intent myIntent = new Intent(getActivity(), EventsActivity.class);
+        //startActivity(myIntent);
+
     }
 
     @Override
-    public void unsetFavouriteEvent(int id) {
+    public void toggleFavourite(String id) {
+        mEventsPresenter.toggleFavourite(id);
+    }
 
+    private void makeToast(final String message){
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity().getApplication().getApplicationContext(),
+                        message, Toast.LENGTH_SHORT).show();
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
     }
 }

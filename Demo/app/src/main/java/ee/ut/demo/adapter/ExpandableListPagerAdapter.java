@@ -15,7 +15,7 @@ import ee.ut.demo.fragment.EventFragment;
 
 public class ExpandableListPagerAdapter extends FragmentStatePagerAdapter {
 
-    private final String MONTH_TEXT = "aprill";
+    private final String MONTH_TEXT = " aprill";
     private final int START_INDEX = 24;
     private final int PAGE_COUNT = 7;
 
@@ -27,7 +27,7 @@ public class ExpandableListPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        return EventFragment.newInstance(mDate);
+        return EventFragment.newInstance(i);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class ExpandableListPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         mDate = position + START_INDEX;
-        return mDate + " " + MONTH_TEXT;
+        return mDate + MONTH_TEXT;
     }
 }

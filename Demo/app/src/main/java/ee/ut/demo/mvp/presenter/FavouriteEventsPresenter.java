@@ -2,9 +2,9 @@ package ee.ut.demo.mvp.presenter;
 
 import java.util.List;
 
+import ee.ut.demo.domain.database.Database;
 import ee.ut.demo.mvp.model.Event;
 import ee.ut.demo.mvp.view.FavouriteEventsView;
-import ee.ut.demo.mvp.domain.repository.DatabaseRepository;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -16,13 +16,13 @@ import rx.schedulers.Schedulers;
 
 public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
 
-    private Subscription mGetEventsSubscription;
+    private Subscription mGetFavouriteEventsSubscription;
     private FavouriteEventsView mFavouriteEventsView;
-    private DatabaseRepository mDbRepo;
+    private Database mDatabase;
 
 
-    public FavouriteEventsPresenter(DatabaseRepository dbRepo) {
-        mDbRepo = dbRepo;
+    public FavouriteEventsPresenter(Database database) {
+        mDatabase = database;
     }
 
     @Override
@@ -37,8 +37,8 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
 
     @Override
     public void onStop() {
-        if (mGetEventsSubscription != null && !mGetEventsSubscription.isUnsubscribed()) {
-            mGetEventsSubscription.unsubscribe();
+        if (mGetFavouriteEventsSubscription != null && !mGetFavouriteEventsSubscription.isUnsubscribed()) {
+            mGetFavouriteEventsSubscription.unsubscribe();
         }
     }
 
@@ -55,7 +55,7 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
     void getFavouriteEvents(){
 
         mFavouriteEventsView.showLoading();
-        mGetEventsSubscription = mDbRepo.getFavouriteEvents()
+        mGetFavouriteEventsSubscription = mDatabase.getFavouriteEvents()
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, List<Event>>() {
                     @Override
@@ -73,6 +73,25 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
                         }else {
                             mFavouriteEventsView.showEmpty();
                         }
+                    }
+                });
+    }
+
+    public void toggleFavourite(String id){
+        mGetFavouriteEventsSubscription = mDatabase.toggleFavourite(id)
+                .subscribeOn(Schedulers.io())
+                .onErrorReturn(new Func1<Throwable, Integer>() {
+                    @Override
+                    public Integer call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        mFavouriteEventsView.showError();
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer result) {
+                        getFavouriteEvents();
                     }
                 });
     }

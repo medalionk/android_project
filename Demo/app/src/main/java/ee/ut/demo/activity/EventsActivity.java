@@ -11,7 +11,9 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
+import ee.ut.demo.TartuApplication;
 import ee.ut.demo.adapter.ExpandableListPagerAdapter;
+import ee.ut.demo.injector.component.ApplicationComponent;
 
 /**
  * @Authors: Ayobami Adewale, Abdullah Bilal
@@ -19,7 +21,7 @@ import ee.ut.demo.adapter.ExpandableListPagerAdapter;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class EventsActivity extends AppCompatActivity{
+public class EventsActivity extends AppCompatActivity {
 
     @Bind(R.id.pager)
     ViewPager mViewPager;
@@ -34,6 +36,8 @@ public class EventsActivity extends AppCompatActivity{
         setContentView(R.layout.activity_events);
 
         ButterKnife.bind(this);
+
+        ApplicationComponent appComponent = ((TartuApplication) getApplication()).getApplicationComponent();
 
         mExpandableListPagerAdapter = new ExpandableListPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mExpandableListPagerAdapter);

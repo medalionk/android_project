@@ -4,11 +4,10 @@ import android.content.Context;
 
 import dagger.Module;
 import dagger.Provides;
-import ee.ut.demo.database.Database;
-import ee.ut.demo.database.DatabaseHandler;
-import ee.ut.demo.database.EventTable;
+import ee.ut.demo.domain.database.Database;
+import ee.ut.demo.domain.database.DatabaseHandler;
+import ee.ut.demo.domain.database.EventTable;
 import ee.ut.demo.injector.scope.PerActivity;
-import ee.ut.demo.mvp.domain.repository.DatabaseRepository;
 
 /**
  * Created by Bilal Abdullah on 3/22/2017.
@@ -28,9 +27,9 @@ public class DatabaseModule {
         return new DatabaseHandler(context, eventTable);
     }
 
-    @PerActivity
-    @Provides
-    public DatabaseRepository provideDatabaseRepository(Database database) {
-        return new DatabaseRepository(database);
-    }
+//    @PerActivity
+//    @Provides
+//    public DatabaseRepository provideDatabaseRepository(Database database) {
+//        return new DatabaseRepository(database);
+//    }
 }

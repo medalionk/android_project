@@ -15,6 +15,7 @@ public class FavouriteViewHolder extends RecyclerView.ViewHolder{
 
     public TextView title;
     public TextView location;
+    public TextView date;
     public TextView time;
 
     public ImageView thumbnail;
@@ -25,6 +26,7 @@ public class FavouriteViewHolder extends RecyclerView.ViewHolder{
 
         title = (TextView) view.findViewById(R.id.title);
         location = (TextView) view.findViewById(R.id.location);
+        date = (TextView) view.findViewById(R.id.date);
         time = (TextView) view.findViewById(R.id.time);
         thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         overflow = (ImageView) view.findViewById(R.id.overflow);

@@ -46,7 +46,7 @@
             android:textSize="@dimen/card_text_size" />
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/location"
@@ -54,6 +54,17 @@
                 android:paddingLeft="@dimen/title_padding"
                 android:paddingRight="@dimen/title_padding"
                 android:textSize="@dimen/card_text_size" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date"
+                android:paddingBottom="@dimen/count_padding_bottom"
+                android:paddingLeft="@dimen/title_padding"
+                android:paddingRight="@dimen/title_padding"
+                android:textSize="@dimen/card_text_size"
+                android:textStyle="italic"/>
 
             <ImageView
                 android:id="@+id/overflow"

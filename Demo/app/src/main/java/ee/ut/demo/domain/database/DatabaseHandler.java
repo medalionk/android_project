@@ -1,4 +1,4 @@
-package ee.ut.demo.database;
+package ee.ut.demo.domain.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Singleton;
 
+import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
 import rx.Observable;
 import rx.Subscriber;
@@ -22,30 +23,39 @@ import rx.schedulers.Schedulers;
 public class DatabaseHandler extends SQLiteOpenHelper implements Database{
 
     private static final String DATABASE_NAME = "psearchdb.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 8;
     private static final String TAG = "SQLITE_HELPER";
 
     public static final String TABLE_EVENTS = "events";
     public static final String KEY_ID = "_id";
-    public static final String KEY_TIME = "time";
+
+    public static final String KEY_EVENT_ID = "event_id";
+    public static final String KEY_START_TIME = "start_time";
+    public static final String KEY_END_TIME = "end_time";
     public static final String KEY_TITLE = "title";
     public static final String KEY_LOCATION = "location";
-    public static final String KEY_TICKET = "ticket";
-    public static final String KEY_URL = "url";
+    public static final String KEY_UPDATED_AT = "updated_at";
+
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_ORGANIZER = "organizer";
     public static final String KEY_ADDITIONAL_INFO = "additional_info";
     public static final String KEY_SONG_BOOK = "song_book";
     public static final String KEY_IMAGE_URL = "image_url";
+    public static final String KEY_TICKET = "ticket";
+    public static final String KEY_PUBLIC_URL = "public_url";
+    public static final String KEY_DATE = "date";
+
     public static final String KEY_FAVOURITE = "favorite";
 
     private static final String DATABASE_CREATE_EVENTS = "CREATE TABLE IF NOT EXISTS "
             + TABLE_EVENTS + " ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + KEY_TIME + " TEXT, " + KEY_TITLE + " TEXT NOT NULL, "
-            + KEY_LOCATION + " TEXT, " + KEY_TICKET + " TEXT, "
-            + KEY_URL + " TEXT, " + KEY_DESCRIPTION + " TEXT, "
-            + KEY_ORGANIZER + " TEXT, " + KEY_ADDITIONAL_INFO + " TEXT, "
-            + KEY_SONG_BOOK + " TEXT, " + KEY_IMAGE_URL + " TEXT, "
+            + KEY_EVENT_ID + " TEXT NOT NULL, " + KEY_START_TIME + " TEXT NOT NULL, "
+            + KEY_END_TIME + " TEXT, " + KEY_TITLE + " TEXT NOT NULL, "
+            + KEY_LOCATION + " TEXT NOT NULL, " + KEY_UPDATED_AT + " TEXT NOT NULL, "
+            + KEY_DESCRIPTION + " TEXT, " + KEY_ORGANIZER + " TEXT, "
+            + KEY_ADDITIONAL_INFO + " TEXT, " + KEY_SONG_BOOK + " TEXT, "
+            + KEY_IMAGE_URL + " TEXT, " + KEY_TICKET + " TEXT NOT NULL, "
+            + KEY_PUBLIC_URL + " TEXT NOT NULL, " + KEY_DATE + " TEXT NOT NULL, "
             + KEY_FAVOURITE + " INTEGER )";
 
     private EventTable mEventTable;
@@ -68,7 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public Observable<List<Event>> getEvents(int page){
+    public Observable<List<Event>> getEventsByPage(int page){
         return makeObservable(mEventTable.getEvents(getReadableDatabase(), page))
                 .subscribeOn(Schedulers.computation());
 
@@ -81,20 +91,20 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Database{
     }
 
     @Override
-    public Observable<Integer> setFavourite(int id){
-        return makeObservable(mEventTable.setFavourite(getReadableDatabase(), id))
-                .subscribeOn(Schedulers.computation());
-    }
-
-    @Override
-    public Observable<Integer> unsetFavourite(int id){
-        return makeObservable(mEventTable.unsetFavourite(getReadableDatabase(), id))
+    public Observable<Integer> toggleFavourite(String id){
+        return makeObservable(mEventTable.toggleFavourite(getReadableDatabase(), id))
                 .subscribeOn(Schedulers.computation());
     }
 
     @Override
     public Observable<Integer> addEvents(List<Event> events){
         return makeObservable(mEventTable.addEvents(getReadableDatabase(), events))
+                .subscribeOn(Schedulers.computation());
+    }
+
+    @Override
+    public Observable<List<Element>> checkUpdateEvents(List<Element> elements) {
+        return makeObservable(mEventTable.checkUpdateEvents(getReadableDatabase(), elements))
                 .subscribeOn(Schedulers.computation());
     }
 
@@ -105,6 +115,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Database{
                     public void call(Subscriber<? super T> sub) {
                         try {
                             sub.onNext(func.call());
+                            sub.onCompleted();
                         } catch(Exception ex) {
                             Log.e(TAG, "Error reading from the database", ex);
                         }

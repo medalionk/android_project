@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import ee.ut.demo.R;
+import ee.ut.demo.helpers.Parse;
 import ee.ut.demo.mvp.model.Event;
 
 /**
@@ -28,6 +29,7 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteViewHolder>
 
     private Context mContext;
     private List<Event> mEvents;
+    private static FavoriteListener mListener;
 
     public FavouriteAdapter(Context mContext) {
         this.mContext = mContext;
@@ -50,6 +52,10 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteViewHolder>
         notifyDataSetChanged();
     }
 
+    public void setFavoriteListener(FavoriteListener listener){
+        mListener = listener;
+    }
+
     @Override
     public FavouriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -60,41 +66,44 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteViewHolder>
 
     @Override
     public void onBindViewHolder(final FavouriteViewHolder holder, int position) {
-        Event event = mEvents.get(position);
+        final Event event = mEvents.get(position);
         holder.title.setText(event.getTitle());
         holder.location.setText(event.getLocation());
-        holder.time.setText(event.getTime());
+        holder.date.setText(event.getDetails().getDate());
+        holder.time.setText(event.getStartTime() + "-" + event.getEndTime());
 
         Picasso.with(mContext)
-                .load(Uri.parse(event.getDetails().getImageUrl()))
+                .load(Uri.parse(Parse.imageUrl(event.getDetails().getImageUrl())))
                 .into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.overflow);
+                showPopupMenu(holder.overflow, event);
             }
         });
     }
 
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view, Event event) {
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_album, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(event));
         popup.show();
     }
 
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
-
+        final Event event;
+        public MyMenuItemClickListener(Event event) {
+            this.event = event;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.action_remove_favourite:
+                    mListener.toggleFavourite(event.getId());
                     Toast.makeText(mContext, "Removed from favourites", Toast.LENGTH_SHORT).show();
                     return true;
                 default:
