@@ -461,8 +461,7 @@ SettingFragment.OnFragmentInteractionListener{
 
              } else
                  alarmManager.setExact(AlarmManager.RTC_WAKEUP, notification_time.getTimeInMillis(), broadcast);
-             Date date=new Date(notification_time.getTimeInMillis());
-                Toast.makeText(getApplicationContext(), "Alarm set "+date, Toast.LENGTH_LONG).show();
+
 
          }
          //TODO (a call to DB to retrieve the event date and compare the current date to the date retrieved. If same, then notify the app user)}
