@@ -24,26 +24,26 @@
         <item>Notifications</item>
         <item>Playlist</item>
         <item>Map</item>
-        <item>Settings</item>
-    </string-array>
+        <!--<item>Settings</item>-->
+   </string-array>
 
-    <string name="activity_title_about_us">About Us</string>
-    <string name="activity_title_sponsors">Our Sponsors</string>
-    <string name="activity_title_personal_schedules"> My Schedules</string>
-    <string name="activity_title_event_schedules">Event Schedules</string>
-    <string name="action_clear_all">Clear All</string>
-    <string name="action_mark_all_read">Mark All as Read</string>
-    <string name="sponsors">Our Sponsors</string>
+   <string name="activity_title_about_us">About Us</string>
+   <string name="activity_title_sponsors">Our Sponsors</string>
+   <string name="activity_title_personal_schedules"> My Schedules</string>
+   <string name="activity_title_event_schedules">Event Schedules</string>
+   <string name="action_clear_all">Clear All</string>
+   <string name="action_mark_all_read">Mark All as Read</string>
+   <string name="sponsors">Our Sponsors</string>
 
-    <string name="hello_blank_fragment">Blank</string>
+   <string name="hello_blank_fragment">Blank</string>
 
-    <string name="loading_error">Error Loading Events</string>
-    <string name="events_loading">Loading!!!</string>
-    <string name="no_event">No Events</string>
+   <string name="loading_error">Error Loading Events</string>
+   <string name="events_loading">Loading!!!</string>
+   <string name="no_event">No Events</string>
 
-    <string name="action_settings">Settings</string>
-    <string name="action_remove_favourite">Remove From Favourite</string>
-    <string name="title_favourite">Saved Events</string>
+   <string name="action_settings">Settings</string>
+   <string name="action_remove_favourite">Remove From Favourite</string>
+   <string name="title_favourite">Saved Events</string>
 
-    <string name="defaultpassword">User Guide <a href="http://www.cleverfinger.com.au/user-guide/">http://www.cleverfinger.com.au/user-guide/</a></string>
+   <string name="defaultpassword">User Guide <a href="http://www.cleverfinger.com.au/user-guide/">http://www.cleverfinger.com.au/user-guide/</a></string>
 </resources>

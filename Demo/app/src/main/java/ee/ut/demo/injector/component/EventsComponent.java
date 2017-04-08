@@ -12,7 +12,7 @@ import ee.ut.demo.injector.scope.PerActivity;
 @PerActivity
 @Component(dependencies = {ApplicationComponent.class},
         modules = {ActivityModule.class, EventsModule.class})
-public interface EventsComponent  {
+public interface  EventsComponent  {
     void inject(EventFragment listFragment);
     void inject(EventsActivity eventsActivity);
     Context context();

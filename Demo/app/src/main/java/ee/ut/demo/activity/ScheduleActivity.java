@@ -68,7 +68,7 @@ public class ScheduleActivity extends AppCompatActivity implements FavouriteEven
         initPresenter();
 
         Picasso.with(this)
-                .load(R.drawable.tartu)
+                .load(R.drawable.header1)
                 .into((ImageView) findViewById(R.id.backdrop));
     }
 

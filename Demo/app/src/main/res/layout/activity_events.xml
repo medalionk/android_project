@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="top"
-        android:background="#1c615d"
-        android:textColor="#fff"
+        android:background="#696969"
+        android:textColor="#A9A9A9"
         style="@style/viewPagerTitleStrip"
         android:paddingTop="4dp"
         android:paddingBottom="4dp" />
