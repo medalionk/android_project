@@ -2,18 +2,18 @@ package ee.ut.demo.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
-import ee.ut.demo.TartuApplication;
 import ee.ut.demo.adapter.ExpandableListPagerAdapter;
-import ee.ut.demo.injector.component.ApplicationComponent;
 
 /**
  * @Authors: Ayobami Adewale, Abdullah Bilal
@@ -26,6 +26,9 @@ public class EventsActivity extends AppCompatActivity {
     @Bind(R.id.pager)
     ViewPager mViewPager;
 
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
+
     private ExpandableListPagerAdapter mExpandableListPagerAdapter;
 
     @Override
@@ -37,7 +40,13 @@ public class EventsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        ApplicationComponent appComponent = ((TartuApplication) getApplication()).getApplicationComponent();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(EventsActivity.this, ScheduleActivity.class);
+                startActivity(i);
+            }
+        });
 
         mExpandableListPagerAdapter = new ExpandableListPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mExpandableListPagerAdapter);

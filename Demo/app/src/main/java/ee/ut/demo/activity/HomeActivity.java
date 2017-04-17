@@ -27,15 +27,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
 
 import javax.inject.Inject;
 
@@ -47,17 +43,13 @@ import ee.ut.demo.fragment.NotificationFragment;
 import ee.ut.demo.fragment.SettingFragment;
 import ee.ut.demo.injector.component.AlarmComponent;
 import ee.ut.demo.injector.component.ApplicationComponent;
-import ee.ut.demo.injector.component.DaggerFavoriteEventsComponent;
 import ee.ut.demo.injector.component.DaggerAlarmComponent;
-import ee.ut.demo.injector.component.FavoriteEventsComponent;
 import ee.ut.demo.injector.module.ActivityModule;
 import ee.ut.demo.injector.module.AlarmModule;
-import ee.ut.demo.injector.module.FavoriteEventsModule;
 import ee.ut.demo.mvp.model.Event;
 import ee.ut.demo.mvp.presenter.AlarmPresenter;
 import ee.ut.demo.mvp.view.HomeView;
 
-import static ee.ut.demo.R.id.list_item;
 import static ee.ut.demo.R.id.toolbar;
 
 /**
@@ -272,17 +264,17 @@ SettingFragment.OnFragmentInteractionListener{
 
                     case R.id.nav_playlist:
                         Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(HomeActivity.this,EventsActivity.class));
+                        startActivity(new Intent(HomeActivity.this, EventsActivity.class));
                         mDrawer.closeDrawers();
                         return true;
 
                     case R.id.event_Schedules:
-                        startActivity(new Intent(HomeActivity.this,EventsActivity.class));
+                        startActivity(new Intent(HomeActivity.this, EventsActivity.class));
                         mDrawer.closeDrawers();
                         return true;
 
                     case R.id.personal_Schedules:
-                        startActivity(new Intent(HomeActivity.this,ScheduleActivity.class));
+                        startActivity(new Intent(HomeActivity.this, ScheduleActivity.class));
                         mDrawer.closeDrawers();
                         return true;
 

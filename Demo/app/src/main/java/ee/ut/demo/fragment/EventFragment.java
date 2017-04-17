@@ -2,13 +2,13 @@ package ee.ut.demo.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.List;
@@ -256,8 +256,10 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getActivity().getApplication().getApplicationContext(),
-                        message, Toast.LENGTH_SHORT).show();
+                Snackbar.make(getActivity().getCurrentFocus(), message, Snackbar.LENGTH_LONG)
+                        .show();
+//                Toast.makeText(getActivity().getApplication().getApplicationContext(),
+//                        message, Toast.LENGTH_SHORT).show();
             }
         };
         getActivity().runOnUiThread(myRunnable);
