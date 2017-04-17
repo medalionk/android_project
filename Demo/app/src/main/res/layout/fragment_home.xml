@@ -5,11 +5,30 @@
     tools:context="ee.ut.demo.fragment.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
+
    <ImageView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:src="@drawable/header2"
-       android:adjustViewBounds="true"
-       android:scaleType="fitXY"/>
+       android:src="@drawable/header"
+       android:layout_alignParentTop="true"
+       android:layout_centerHorizontal="true"
+       />
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:scrollbars="vertical"
+
+
+            />
+
+
+
+
 
 </FrameLayout>

@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +21,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+
+import ee.ut.demo.adapter.HomeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,8 +46,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
+import ee.ut.demo.adapter.FavouriteAdapter;
+import ee.ut.demo.adapter.HomeAdapter;
 import ee.ut.demo.fragment.HomeFragment;
 import ee.ut.demo.fragment.MapFragment;
 import ee.ut.demo.fragment.NotificationFragment;
@@ -66,7 +76,7 @@ import static ee.ut.demo.R.id.toolbar;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,MapFragment.OnFragmentInteractionListener,NotificationFragment.OnFragmentInteractionListener,
+public class HomeActivity extends AppCompatActivity implements HomeView,HomeListener, HomeFragment.OnFragmentInteractionListener,MapFragment.OnFragmentInteractionListener,NotificationFragment.OnFragmentInteractionListener,
 SettingFragment.OnFragmentInteractionListener{
 
     private static final String TAG_HOME = "home";
@@ -112,8 +122,15 @@ SettingFragment.OnFragmentInteractionListener{
         mImgNavHeaderBg = (ImageView) mNavHeader.findViewById(R.id.img_header_bg);
 
         mActivityTitles = getResources().getStringArray(R.array.home_menu);
+
+
         injectDependencies();
+
         mEventPresenter.onCreate();
+
+        ButterKnife.bind(this);
+
+
 
 
         initPresenter();
@@ -217,18 +234,12 @@ SettingFragment.OnFragmentInteractionListener{
                 // home
                 HomeFragment homeFragment = new HomeFragment();
                 return homeFragment;
-            case 3:
-                //notifications
-                NotificationFragment notificationFragment = new NotificationFragment();
-                return notificationFragment;
-            case 5:
+
+            case 4:
                 //map
                 MapFragment mapFragment = new MapFragment();
                 return mapFragment;
-            case 6:
-                // settings
-                SettingFragment settingFragment = new SettingFragment();
-                return settingFragment;
+
 
             default:
                 return new HomeFragment();
@@ -255,13 +266,9 @@ SettingFragment.OnFragmentInteractionListener{
                         CURRENT_TAG = TAG_HOME;
                         break;
 
-                    case R.id.nav_notifications:
-                        mNavItemIndex = 3;
-                        CURRENT_TAG = TAG_NOTIFICATIONS;
-                        break;
 
                     case R.id.map:
-                        mNavItemIndex =  5;
+                        mNavItemIndex =  4;
                         CURRENT_TAG = TAG_MAP;
                         break;
 
@@ -352,6 +359,10 @@ SettingFragment.OnFragmentInteractionListener{
         super.onBackPressed();
     }
 
+    public void toggleHome(String id) {
+        //mEventPresenter.toggleHome(id);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -391,11 +402,13 @@ SettingFragment.OnFragmentInteractionListener{
         mEventPresenter.onStop();
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         mEventPresenter.onStart();
     }
+
 
     @Override
     public void showFavouriteEvents(final List<Event> events) {
@@ -404,6 +417,8 @@ SettingFragment.OnFragmentInteractionListener{
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+
+
 
                 for(int i = 0; i < events.size() ; i++){
                     events.get(i).getStartTime();
@@ -487,4 +502,5 @@ SettingFragment.OnFragmentInteractionListener{
     public void onFragmentInteraction(Uri uri){
 
     }
+
 }
