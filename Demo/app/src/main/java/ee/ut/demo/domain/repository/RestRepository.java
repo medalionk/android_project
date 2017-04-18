@@ -21,8 +21,15 @@ public class RestRepository implements Repository {
         return apiService.getEvent(eventId, apiToken);
     }
 
+    public Observable<ResponseWrapper<Event>> getHome(String eventId, String apiToken) {
+        return apiService.getEvent(eventId, apiToken);
+    }
     @Override
     public Observable<ResponseWrapper<List<Element>>> getElements(String pageId) {
         return apiService.getElements(pageId);
+    }
+    @Override
+    public Observable<ResponseWrapper<List<Element>>> getHomeElements(String pageId) {
+        return apiService.getHomeElements(pageId);
     }
 }

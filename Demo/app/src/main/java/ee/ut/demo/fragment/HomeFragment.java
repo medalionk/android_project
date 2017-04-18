@@ -9,16 +9,24 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
@@ -42,22 +50,24 @@ import ee.ut.demo.mvp.view.FragmentView;
  * University of Tartu, Spring 2017.
  */
 public class HomeFragment extends Fragment implements FragmentView, HomeListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @Inject
     FragmentPresenter mFragmentPresenter;
 
     private OnFragmentInteractionListener mListener;
 
-    private RecyclerView mRecyclerView;
+
     private HomeAdapter mAdapter;
+
+    @Bind(R.id.loading)
+    View mLoadingView;
+
+    @Bind(R.id.error)
+    View mErrorListView;
+
+    @Bind(R.id.recycler_view)
+    RecyclerView mRecyclerView;
 
     private static final String PAGE = "page_number";
 
@@ -84,7 +94,9 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
             injectDependencies();
+
             mFragmentPresenter.onCreate();
 
     }
@@ -94,6 +106,39 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
                              Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        Calendar notification_time = Calendar.getInstance();
+        notification_time.set(Calendar.MONTH, 3);
+        notification_time.set(Calendar.DAY_OF_MONTH, 30);
+        notification_time.set(Calendar.HOUR_OF_DAY, 23);
+        notification_time.set(Calendar.MINUTE, 59);
+        notification_time.set(Calendar.SECOND, 00);
+
+
+
+        long msDiff = notification_time.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+        if (daysDiff >= 6) {
+            mPage = 0;
+        }
+
+        else if (daysDiff == 5) {
+            mPage = 1;
+        }
+
+        else if (daysDiff == 4) {
+            mPage = 2;
+        }
+        else if (daysDiff == 3) {
+            mPage = 3;
+        }
+        else if (daysDiff == 2) {
+            mPage = 4;
+        }
+        else if (daysDiff == 1) {
+            mPage = 5;
+        }
+        else mPage = 6;
 
         ButterKnife.bind(this, view);
 
@@ -215,12 +260,30 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
 
     @Override
     public void showLoading() {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mErrorListView.setVisibility(View.GONE);
 
+                mLoadingView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
     }
 
     @Override
     public void showError() {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
 
+                mLoadingView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.VISIBLE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
     }
 
     @Override
@@ -238,6 +301,10 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+                mLoadingView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+
                 addEvents(events);
             }
         };

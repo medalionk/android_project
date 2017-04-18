@@ -18,4 +18,11 @@ public interface  ApiService {
     @GET("elements/{event_id}")
     Observable<ResponseWrapper<Event>> getEvent(@Path("event_id") String eventId,
                                                        @Query("api_token") String apiToken);
+
+    @GET("elements")
+    Observable<ResponseWrapper<List<Element>>> getHomeElements(@Query("home_id") String pageId);
+
+    @GET("elements/{event_id}")
+    Observable<ResponseWrapper<Event>> getHome(@Path("home_id") String eventId,
+                                                @Query("api_token") String apiToken);
 }
