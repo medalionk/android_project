@@ -6,9 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,27 +20,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 
-import ee.ut.demo.adapter.HomeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,10 +40,8 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.fragment.EventsHomeFragment;
-import ee.ut.demo.adapter.FavouriteAdapter;
-import ee.ut.demo.adapter.HomeAdapter;
 import ee.ut.demo.fragment.HomeFragment;
-import ee.ut.demo.fragment.NotificationFragment;
+import ee.ut.demo.fragment.PlaylistFragment;
 import ee.ut.demo.fragment.SettingsFragment;
 import ee.ut.demo.injector.component.AlarmComponent;
 import ee.ut.demo.injector.component.ApplicationComponent;
@@ -74,11 +60,11 @@ import static ee.ut.demo.R.id.toolbar;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,NotificationFragment.OnFragmentInteractionListener{
+public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,PlaylistFragment.OnFragmentInteractionListener{
 
     private static final String TAG_HOME = "home";
     private static final String TAG_MAP = "map";
-    private static final String TAG_NOTIFICATIONS = "notifications";
+    private static final String TAG_PLAYLIST = "playlist";
     private static final String TAG_SETTINGS = "settings";
     private static final String TAG_EVENTS = "events";
     private final int PERMISSIONS_REQUEST = 0;
@@ -225,12 +211,9 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
             case 0:
                 return new HomeFragment();
             case 1:
-                SettingsFragment fragment = new SettingsFragment();
-                return null;
-            case 2:
                 return new EventsHomeFragment();
-            case 3:
-                return new NotificationFragment();
+            case 2:
+                return new PlaylistFragment();
             default:
                 return new HomeFragment();
         }
@@ -261,22 +244,15 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
                         startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
                         mDrawer.closeDrawers();
                         return true;
-                        /*mNavItemIndex = 1;
-                        CURRENT_TAG = TAG_SETTINGS;
-                        break;*/
+
 
                     case R.id.event_Schedules:
-                        mNavItemIndex = 2;
+                        mNavItemIndex = 1;
                         CURRENT_TAG = TAG_EVENTS;
                         break;
 
-                    case R.id.nav_notifications:
-                        mNavItemIndex = 3;
-                        CURRENT_TAG = TAG_NOTIFICATIONS;
-                        break;
-
                     case R.id.nav_playlist:
-                        AssetManager assetManager = getAssets();
+                        /*AssetManager assetManager = getAssets();
 
                         InputStream in = null;
                         OutputStream out = null;
@@ -291,11 +267,13 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setDataAndType(path, "application/pdf");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-//                        Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
-//                        startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));
-//                        mDrawer.closeDrawers();
-                        return true;
+                        startActivity(intent); */
+                        //Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
+                        //startActivity(new Intent(HomeActivity.this, PlaylistActivity.class));
+                        //mDrawer.closeDrawers();
+                        mNavItemIndex = 2;
+                        CURRENT_TAG = TAG_PLAYLIST;
+                        break;
 
                     case R.id.nav_about_us:
                         startActivity(new Intent(HomeActivity.this, AboutUsActivity.class));
@@ -367,7 +345,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         //mEventPresenter.toggleHome(id);
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         if (mNavItemIndex == 0) {
@@ -378,23 +356,8 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
         return true;
-    }
+    } */
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_mark_all_read) {
-            Toast.makeText(getApplicationContext(), "All notifications marked as read!", Toast.LENGTH_LONG).show();
-        }
-
-        if (id == R.id.action_clear_notifications) {
-            Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void initPresenter() {
         mEventPresenter.attachView(this);

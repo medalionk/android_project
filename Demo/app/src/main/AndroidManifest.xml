@@ -40,6 +40,12 @@
             android:name=".activity.AboutUsActivity"
             android:label="@string/activity_title_about_us"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.PlaylistActivity"
+            android:label="@string/playlist"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".activity.SponsorsActivity"
             android:label="@string/activity_title_sponsors" />
