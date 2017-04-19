@@ -65,6 +65,13 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Database{
         mEventTable = eventTable;
     }
 
+    public DatabaseHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public SQLiteDatabase getDatabaseHandler(){
+        return getReadableDatabase();
+    }
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE_EVENTS);

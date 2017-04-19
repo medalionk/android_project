@@ -13,6 +13,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.MenuItem;
 
 import ee.ut.demo.R;
+import ee.ut.demo.domain.database.DatabaseHandler;
+import ee.ut.demo.domain.database.EventTable;
 import ee.ut.demo.fragment.EventFragment;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
@@ -82,12 +84,28 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (preference instanceof ListPreference) {
                 ListPreference listPreference = (ListPreference) preference;
                 listPreference.setSummary(listPreference.getEntry());
+
+                deleteTable();
+//                CharSequence ch = preference.getSummary();
+//                CharSequence ch2 = listPreference.getValue();
+//               // CharSequence ch2 = preference..getValue();
+//                if (listPreference.getSummary() != null){
+//                    deleteTable();
+//                }
                 return;
             }
             SharedPreferences sharedPrefs = getPreferenceManager().getSharedPreferences();
             preference.setSummary(sharedPrefs.getString(key, "Default"));
         }
+
+        private void deleteTable(){
+            EventTable eventTable = new EventTable();
+            DatabaseHandler handler = new DatabaseHandler(getContext());
+            eventTable.deleteTable(handler.getDatabaseHandler());
+        }
     }
+
+
 
     @Override
     protected boolean isValidFragment (String fragmentName) {

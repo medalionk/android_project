@@ -23,8 +23,11 @@ import ee.ut.demo.mvp.model.Event;
 
 public class EventTable {
 
-    final String DAYS[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    final String DAYS[] = {"24", "25", "26", "27", "28", "29", "30"};
 
+    public void deleteTable(final SQLiteDatabase db){
+        db.execSQL("delete from " + DatabaseHandler.TABLE_EVENTS);
+    }
     Callable<List<Element>> checkUpdateEvents(final SQLiteDatabase db, final List<Element> elements) {
         return new Callable<List<Element>>() {
             @Override
