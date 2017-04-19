@@ -13,14 +13,14 @@
     <string name="map">Map</string>
     <string name="settings">Lang Settings</string>
     <string name="about_us">About Us</string>
-    <string name="playlist">Playlist</string>
+    <string name="playlist">Songs and Event Guide</string>
     <string name="feedback">Send Feedback</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="home_menu">
         <item>Home</item>
         <item>Events</item>
-        <item>Playlist</item>
+        <item>Songs and Event Guide</item>
         <item>Language</item>
         <!--<item>Settings</item>-->
     </string-array>

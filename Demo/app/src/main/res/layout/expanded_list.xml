@@ -18,7 +18,7 @@
             android:paddingBottom="10dp"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:textColor="#1c615d"
+            android:textColor="#ff6b00"
             android:text="Hello"/>
         <LinearLayout
             android:layout_width="match_parent"

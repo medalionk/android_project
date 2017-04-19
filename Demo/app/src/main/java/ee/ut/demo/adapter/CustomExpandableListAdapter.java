@@ -171,7 +171,7 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         ImageView imageView = (ImageView) convertView.findViewById(R.id.favorite);
 
         imageView.setImageResource(imgResourceId);
-        imageView.setColorFilter(0xD28B0000);
+        imageView.setColorFilter(0xFFEA7608);
         imageView.setOnClickListener(new View.OnClickListener(){
             String id = event.getId();
             @Override

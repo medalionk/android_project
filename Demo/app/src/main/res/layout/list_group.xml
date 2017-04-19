@@ -44,7 +44,7 @@
                 android:maxLines="1"
                 android:text="Hitman"
                 android:ellipsize="end"
-                android:textColor="#8B0000"/>
+                android:textColor="#ff6b00"/>
 
             <TextView
                 android:id="@+id/eventLocationGrp"
