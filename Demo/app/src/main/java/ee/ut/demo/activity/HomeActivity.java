@@ -275,11 +275,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
                         CURRENT_TAG = TAG_PLAYLIST;
                         break;
 
-                    case R.id.nav_about_us:
-                        startActivity(new Intent(HomeActivity.this, AboutUsActivity.class));
-                        mDrawer.closeDrawers();
-                        return true;
-
                     case R.id.sponsors:
                         startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));
                         mDrawer.closeDrawers();
