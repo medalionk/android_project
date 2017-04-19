@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,8 +23,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+
+import ee.ut.demo.adapter.HomeListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,9 +48,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.fragment.EventsHomeFragment;
+import ee.ut.demo.adapter.FavouriteAdapter;
+import ee.ut.demo.adapter.HomeAdapter;
 import ee.ut.demo.fragment.HomeFragment;
 import ee.ut.demo.fragment.NotificationFragment;
 import ee.ut.demo.fragment.SettingsFragment;
@@ -110,8 +120,15 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         mImgNavHeaderBg = (ImageView) mNavHeader.findViewById(R.id.img_header_bg);
 
         mActivityTitles = getResources().getStringArray(R.array.home_menu);
+
+
         injectDependencies();
+
         mEventPresenter.onCreate();
+
+        ButterKnife.bind(this);
+
+
 
 
         initPresenter();
@@ -346,6 +363,10 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         super.onBackPressed();
     }
 
+    public void toggleHome(String id) {
+        //mEventPresenter.toggleHome(id);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -385,11 +406,13 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         mEventPresenter.onStop();
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
         mEventPresenter.onStart();
     }
+
 
     @Override
     public void showFavouriteEvents(final List<Event> events) {
@@ -398,6 +421,8 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+
+
 
                 for(int i = 0; i < events.size() ; i++){
                     events.get(i).getStartTime();
@@ -455,8 +480,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
 
              } else
                  alarmManager.setExact(AlarmManager.RTC_WAKEUP, notification_time.getTimeInMillis(), broadcast);
-             Date date=new Date(notification_time.getTimeInMillis());
-                Toast.makeText(getApplicationContext(), "Alarm set "+date, Toast.LENGTH_LONG).show();
+
 
          }
          //TODO (a call to DB to retrieve the event date and compare the current date to the date retrieved. If same, then notify the app user)}
@@ -482,4 +506,5 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
     public void onFragmentInteraction(Uri uri){
 
     }
+
 }

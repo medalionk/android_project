@@ -9,7 +9,7 @@ import ee.ut.demo.injector.module.AlarmModule;
 import ee.ut.demo.injector.scope.PerActivity;
 
 /**
- * Created by Bilal Abdullah on 3/23/2017.
+ * Created by Adewale Ayobami on 04/07/2017.
  */
 @PerActivity
 @Component(dependencies = {ApplicationComponent.class},

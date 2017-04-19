@@ -1,14 +1,47 @@
 package ee.ut.demo.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import ee.ut.demo.R;
+import ee.ut.demo.TartuApplication;
+
+import ee.ut.demo.adapter.CustomExpandableListAdapter;
+import ee.ut.demo.adapter.HomeAdapter;
+import ee.ut.demo.adapter.HomeListener;
+import ee.ut.demo.injector.component.ApplicationComponent;
+import ee.ut.demo.injector.component.DaggerFragmentComponent;
+import ee.ut.demo.injector.component.FragmentComponent;
+import ee.ut.demo.injector.module.FragmentModule;
+import ee.ut.demo.injector.module.ActivityModule;
+import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.presenter.FragmentPresenter;
+import ee.ut.demo.mvp.view.FragmentView;
 
 /**
  * @Authors: Ayobami Adewale, Abdullah Bilal
@@ -16,54 +49,111 @@ import ee.ut.demo.R;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class HomeFragment extends Fragment implements FragmentView, HomeListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    @Inject
+    FragmentPresenter mFragmentPresenter;
 
     private OnFragmentInteractionListener mListener;
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+    private HomeAdapter mAdapter;
+
+    @Bind(R.id.loading)
+    View mLoadingView;
+
+    @Bind(R.id.error)
+    View mErrorListView;
+
+    @Bind(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
+    private static final String PAGE = "page_number";
+
+
+    private int mPage = 0;
+
+
+
+    public static HomeFragment newInstance(int page) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PAGE, page);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(PAGE, mPage);
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+
+            injectDependencies();
+
+            mFragmentPresenter.onCreate();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+       View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        Calendar notification_time = Calendar.getInstance();
+        notification_time.set(Calendar.MONTH, 3);
+        notification_time.set(Calendar.DAY_OF_MONTH, 30);
+        notification_time.set(Calendar.HOUR_OF_DAY, 23);
+        notification_time.set(Calendar.MINUTE, 59);
+        notification_time.set(Calendar.SECOND, 00);
+
+
+
+        long msDiff = notification_time.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
+
+        if (daysDiff >= 6) {
+            mPage = 0;
+        }
+
+        else if (daysDiff == 5) {
+            mPage = 1;
+        }
+
+        else if (daysDiff == 4) {
+            mPage = 2;
+        }
+        else if (daysDiff == 3) {
+            mPage = 3;
+        }
+        else if (daysDiff == 2) {
+            mPage = 4;
+        }
+        else if (daysDiff == 1) {
+            mPage = 5;
+        }
+        else mPage = 6;
+
+        ButterKnife.bind(this, view);
+
+
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+
+        initAdapter();
+        initRecyclerView();
+
+
+        initPresenter();
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -90,18 +180,154 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view);
+            int column = position % spanCount;
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount;
+                outRect.right = (column + 1) * spacing / spanCount;
+
+                if (position < spanCount) {
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing;
+            } else {
+                outRect.left = column * spacing / spanCount;
+                outRect.right = spacing - (column + 1) * spacing / spanCount;
+                if (position >= spanCount) {
+                    outRect.top = spacing;
+                }
+            }
+        }
+    }
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    private void initAdapter() {
+        if (mAdapter == null) {
+            mAdapter = new HomeAdapter(getActivity());
+            //mAdapter.setHomeListener(this);
+        }
+    }
+
+    private void initRecyclerView() {
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 1);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void initPresenter() {
+        mFragmentPresenter.attachView(this);
+        mFragmentPresenter.setPage(mPage);
+    }
+
+    private  void injectDependencies() {
+        ApplicationComponent appComponent = ((TartuApplication) getActivity().getApplication())
+                .getApplicationComponent();
+        FragmentComponent fragmentComponent = DaggerFragmentComponent.builder()
+                .fragmentModule(new FragmentModule())
+                .activityModule(new ActivityModule(getActivity()))
+                .applicationComponent(appComponent)
+                .build();
+
+        fragmentComponent.inject(this);
+    }
+
+    @Override
+    public void showLoading() {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mErrorListView.setVisibility(View.GONE);
+
+                mLoadingView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    @Override
+    public void showError() {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                mLoadingView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.VISIBLE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    @Override
+    public void showEmpty() {
+
+    }
+
+    public void addEvents(Collection<Event> events) {
+        mAdapter.replaceEvents(events);
+    }
+
+    @Override
+    public void showEvents(final List<Event> events) {
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mLoadingView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+
+                addEvents(events);
+            }
+        };
+
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+
+    public void toggleHome(String id) {
+        //mFragmentPresenter.toggleFavourite(id);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mFragmentPresenter.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ////
+        //mEventsPresenter.setPage(mPage);
+        mFragmentPresenter.onStart();
     }
 }

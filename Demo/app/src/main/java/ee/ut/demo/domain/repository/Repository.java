@@ -10,4 +10,6 @@ import rx.Observable;
 public interface Repository {
     Observable<ResponseWrapper<Event>> getEvent(String eventId, String apiToken);
     Observable<ResponseWrapper<List<Element>>> getElements(String pageId);
+    Observable<ResponseWrapper<Event>> getHome(String eventId, String apiToken);
+    Observable<ResponseWrapper<List<Element>>> getHomeElements(String pageId);
 }
