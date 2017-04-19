@@ -1,16 +1,17 @@
 package ee.ut.demo.mvp.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.List;
 
 import ee.ut.demo.domain.database.Database;
-import ee.ut.demo.helpers.ConfigManager;
 import ee.ut.demo.domain.repository.Repository;
 import ee.ut.demo.domain.repository.ResponseMappingFunc;
+import ee.ut.demo.helpers.ConfigManager;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
-import ee.ut.demo.mvp.view.EventsView;
 import ee.ut.demo.mvp.view.FragmentView;
 import rx.Observable;
 import rx.Subscription;
@@ -21,7 +22,8 @@ import rx.schedulers.Schedulers;
 
 public class FragmentPresenter implements Presenter<FragmentView>{
 
-    private static final String PAGE_ID = "page_id";
+    private static final String ENG_PAGE_ID = "eng_page_id";
+    private static final String EST_PAGE_ID = "est_page_id";
     private static final String API_TOKEN = "api_token";
 
     private Subscription mGetEventsSubscription;
@@ -72,7 +74,14 @@ public class FragmentPresenter implements Presenter<FragmentView>{
 
     private void getEvents() {
 
-        final String pageId = ConfigManager.getProperty(mContext, PAGE_ID);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        String language = prefs.getString("event_language", "");
+        String property;
+        if(language.equals("0")) property = EST_PAGE_ID;
+        else property = ENG_PAGE_ID;
+
+        final String pageId = ConfigManager.getProperty(mContext, property);
         final String apiToken = ConfigManager.getProperty(mContext, API_TOKEN);
 
         mGetEventsSubscription = mRepository.getElements(pageId)
