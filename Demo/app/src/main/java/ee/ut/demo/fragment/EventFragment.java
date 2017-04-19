@@ -85,7 +85,7 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.event_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_event, container, false);
 
         ButterKnife.bind(this, rootView);
 

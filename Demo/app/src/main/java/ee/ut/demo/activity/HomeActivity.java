@@ -6,10 +6,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +29,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -37,10 +43,10 @@ import javax.inject.Inject;
 
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
+import ee.ut.demo.fragment.EventsHomeFragment;
 import ee.ut.demo.fragment.HomeFragment;
-import ee.ut.demo.fragment.MapFragment;
 import ee.ut.demo.fragment.NotificationFragment;
-import ee.ut.demo.fragment.SettingFragment;
+import ee.ut.demo.fragment.SettingsFragment;
 import ee.ut.demo.injector.component.AlarmComponent;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerAlarmComponent;
@@ -58,13 +64,13 @@ import static ee.ut.demo.R.id.toolbar;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,MapFragment.OnFragmentInteractionListener,NotificationFragment.OnFragmentInteractionListener,
-SettingFragment.OnFragmentInteractionListener{
+public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,NotificationFragment.OnFragmentInteractionListener{
 
     private static final String TAG_HOME = "home";
     private static final String TAG_MAP = "map";
     private static final String TAG_NOTIFICATIONS = "notifications";
     private static final String TAG_SETTINGS = "settings";
+    private static final String TAG_EVENTS = "events";
     private final int PERMISSIONS_REQUEST = 0;
 
     public static String CURRENT_TAG = TAG_HOME;
@@ -113,7 +119,6 @@ SettingFragment.OnFragmentInteractionListener{
         loadNavHeader();
 
 
-
         setUpNavigationView();
 
         if (savedInstanceState == null) {
@@ -123,6 +128,7 @@ SettingFragment.OnFragmentInteractionListener{
         }
 
         requestPermission();
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     private void loadNavHeader() {
@@ -136,8 +142,6 @@ SettingFragment.OnFragmentInteractionListener{
     private void requestPermission(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
-
 
             requestPermissions(new String[] {Manifest.permission.INTERNET}, PERMISSIONS_REQUEST);
         }
@@ -175,17 +179,13 @@ SettingFragment.OnFragmentInteractionListener{
             public void run() {
                 Fragment fragment = getHomeFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                        android.R.anim.fade_out);
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };
 
-
-        if (mPendingRunnable != null) {
-            mHandler.post(mPendingRunnable);
-        }
+        mHandler.post(mPendingRunnable);
 
         mDrawer.closeDrawers();
 
@@ -206,22 +206,14 @@ SettingFragment.OnFragmentInteractionListener{
        private Fragment getHomeFragment() {
         switch (mNavItemIndex) {
             case 0:
-                // home
-                HomeFragment homeFragment = new HomeFragment();
-                return homeFragment;
+                return new HomeFragment();
+            case 1:
+                SettingsFragment fragment = new SettingsFragment();
+                return null;
+            case 2:
+                return new EventsHomeFragment();
             case 3:
-                //notifications
-                NotificationFragment notificationFragment = new NotificationFragment();
-                return notificationFragment;
-            case 5:
-                //map
-                MapFragment mapFragment = new MapFragment();
-                return mapFragment;
-            case 6:
-                // settings
-                SettingFragment settingFragment = new SettingFragment();
-                return settingFragment;
-
+                return new NotificationFragment();
             default:
                 return new HomeFragment();
         }
@@ -235,6 +227,7 @@ SettingFragment.OnFragmentInteractionListener{
         mNavigationView.getMenu().getItem(mNavItemIndex).setChecked(true);
     }
 
+
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -247,35 +240,44 @@ SettingFragment.OnFragmentInteractionListener{
                         CURRENT_TAG = TAG_HOME;
                         break;
 
+                    case R.id.nav_settings:
+                        startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+                        mDrawer.closeDrawers();
+                        return true;
+                        /*mNavItemIndex = 1;
+                        CURRENT_TAG = TAG_SETTINGS;
+                        break;*/
+
+                    case R.id.event_Schedules:
+                        mNavItemIndex = 2;
+                        CURRENT_TAG = TAG_EVENTS;
+                        break;
+
                     case R.id.nav_notifications:
                         mNavItemIndex = 3;
                         CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
 
-                    case R.id.map:
-                        mNavItemIndex =  5;
-                        CURRENT_TAG = TAG_MAP;
-                        break;
-
-                   /* case R.id.nav_settings:
-                        mNavItemIndex = 6;
-                        CURRENT_TAG = TAG_SETTINGS;
-                        break; */
-
                     case R.id.nav_playlist:
-                        Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(HomeActivity.this, EventsActivity.class));
-                        mDrawer.closeDrawers();
-                        return true;
+                        AssetManager assetManager = getAssets();
 
-                    case R.id.event_Schedules:
-                        startActivity(new Intent(HomeActivity.this, EventsActivity.class));
-                        mDrawer.closeDrawers();
-                        return true;
-
-                    case R.id.personal_Schedules:
-                        startActivity(new Intent(HomeActivity.this, ScheduleActivity.class));
-                        mDrawer.closeDrawers();
+                        InputStream in = null;
+                        OutputStream out = null;
+                        File file = new File(getFilesDir(), "songs.pdf");
+                        InputStream is;
+                        try {
+                            is = getAssets().open("songs.pdf");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Uri path = Uri.fromFile(file);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(path, "application/pdf");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+//                        Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
+//                        startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));
+//                        mDrawer.closeDrawers();
                         return true;
 
                     case R.id.nav_about_us:

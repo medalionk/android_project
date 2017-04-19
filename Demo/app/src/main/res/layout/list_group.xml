@@ -73,6 +73,6 @@
             android:layout_marginRight="@dimen/list_right_margin"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:background="@mipmap/off_selected" />
+            android:background="@mipmap/ic_favorite_unselected" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

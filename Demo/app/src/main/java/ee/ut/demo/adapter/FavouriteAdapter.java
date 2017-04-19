@@ -67,6 +67,7 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteViewHolder>
     @Override
     public void onBindViewHolder(final FavouriteViewHolder holder, int position) {
         final Event event = mEvents.get(position);
+
         holder.title.setText(event.getTitle());
         holder.location.setText(event.getLocation());
         holder.date.setText(event.getDetails().getDate());

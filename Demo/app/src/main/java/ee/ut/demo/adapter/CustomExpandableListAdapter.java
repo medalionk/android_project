@@ -167,10 +167,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
         TextView titleTime = (TextView) convertView.findViewById(R.id.eventTimeGrp);
         titleTime.setText(event.getStartTime() + "-" + event.getEndTime());
 
-        int imgResourceId = event.isFavorite() ? R.mipmap.on_selected : R.mipmap.off_selected;
+        int imgResourceId = event.isFavorite() ? R.mipmap.ic_favorite_selected : R.mipmap.ic_favorite_unselected;
         ImageView imageView = (ImageView) convertView.findViewById(R.id.favorite);
 
         imageView.setImageResource(imgResourceId);
+        imageView.setColorFilter(0xD28B0000);
         imageView.setOnClickListener(new View.OnClickListener(){
             String id = event.getId();
             @Override

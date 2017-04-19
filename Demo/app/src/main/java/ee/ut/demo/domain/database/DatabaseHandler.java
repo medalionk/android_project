@@ -23,7 +23,7 @@ import rx.schedulers.Schedulers;
 public class DatabaseHandler extends SQLiteOpenHelper implements Database{
 
     private static final String DATABASE_NAME = "psearchdb.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
     private static final String TAG = "SQLITE_HELPER";
 
     public static final String TABLE_EVENTS = "events";
