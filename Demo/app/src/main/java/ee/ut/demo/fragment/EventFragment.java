@@ -79,7 +79,6 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
-        mEventsPresenter.onCreate();
     }
 
     @Override
