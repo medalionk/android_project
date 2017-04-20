@@ -1,6 +1,8 @@
 package ee.ut.demo.mvp.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.List;
 
@@ -19,7 +21,8 @@ import rx.schedulers.Schedulers;
 
 public class FragmentPresenter implements Presenter<FragmentView>{
 
-    private static final String ARTICLE_PAGE_ID = "article_page_id";
+    private static final String ENG_ARTICLE_PAGE_ID = "eng_article_page_id";
+    private static final String EST_ARTICLE_PAGE_ID = "est_article_page_id";
     private static final String API_TOKEN = "api_token";
     private static final String ARTICLE_PATH = "articles";
 
@@ -69,7 +72,14 @@ public class FragmentPresenter implements Presenter<FragmentView>{
             mFragmentView.showLoading();
         }
 
-        final String pageId = ConfigManager.getProperty(mContext, ARTICLE_PAGE_ID);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        String language = prefs.getString("event_language", "");
+        String property;
+        if(language.equals("0")) property = EST_ARTICLE_PAGE_ID;
+        else property = ENG_ARTICLE_PAGE_ID;
+
+        final String pageId = ConfigManager.getProperty(mContext, property);
         final String apiToken = ConfigManager.getProperty(mContext, API_TOKEN);
 
         mGetEventsSubscription = mRepository.getElements(ARTICLE_PATH, pageId, apiToken)
