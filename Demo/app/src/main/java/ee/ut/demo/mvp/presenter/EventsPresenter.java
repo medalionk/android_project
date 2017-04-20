@@ -45,7 +45,7 @@ public class EventsPresenter implements Presenter<EventsView>{
 
     @Override
     public void onCreate() {
-        getEvents();
+
     }
 
     @Override
@@ -75,6 +75,8 @@ public class EventsPresenter implements Presenter<EventsView>{
     }
 
     private void getEvents() {
+
+        mEventsView.showLoading();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
@@ -156,8 +158,6 @@ public class EventsPresenter implements Presenter<EventsView>{
                         }
                     }
                 });
-
-
     }
 
     void getEventsByPage(){
