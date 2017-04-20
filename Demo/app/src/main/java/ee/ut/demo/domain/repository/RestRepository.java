@@ -2,6 +2,7 @@ package ee.ut.demo.domain.repository;
 
 import java.util.List;
 
+import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
 import ee.ut.demo.mvp.model.ResponseWrapper;
@@ -21,13 +22,24 @@ public class RestRepository implements Repository {
         return apiService.getEvent(eventId, apiToken);
     }
 
+    @Override
+    public Observable<ResponseWrapper<List<Element>>> getElements(String path,
+                                                                  String pageId, String apiToken) {
+        return apiService.getElements(path, pageId, apiToken);
+    }
+
+    @Override
+    public Observable<ResponseWrapper<Article>> getArticle(String articleId, String apiToken) {
+        return apiService.getArticle(articleId, apiToken);
+    }
+
+
+
+    @Override
     public Observable<ResponseWrapper<Event>> getHome(String eventId, String apiToken) {
         return apiService.getEvent(eventId, apiToken);
     }
-    @Override
-    public Observable<ResponseWrapper<List<Element>>> getElements(String pageId) {
-        return apiService.getElements(pageId);
-    }
+
     @Override
     public Observable<ResponseWrapper<List<Element>>> getHomeElements(String pageId) {
         return apiService.getHomeElements(pageId);

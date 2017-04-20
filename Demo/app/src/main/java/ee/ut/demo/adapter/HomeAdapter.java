@@ -2,25 +2,23 @@ package ee.ut.demo.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ee.ut.demo.R;
 import ee.ut.demo.helpers.Parse;
-import ee.ut.demo.mvp.model.Event;
-import ee.ut.demo.mvp.view.HomeView;
+import ee.ut.demo.mvp.model.Article;
 
 /**
  * Created by Bilal Abdullah on 3/23/2017.
@@ -29,91 +27,68 @@ import ee.ut.demo.mvp.view.HomeView;
 public class HomeAdapter  extends RecyclerView.Adapter<HomeViewHolder> {
 
     private Context mContext;
-    private List<Event> mEvents;
-    private static HomeListener mListener;
+    private List<Article> mArticles;
 
     public HomeAdapter(Context mContext) {
         this.mContext = mContext;
-        this.mEvents = new ArrayList<>();
+        this.mArticles = new ArrayList<>();
     }
 
-    public void addAll(Collection<Event> events) {
-        this.mEvents.addAll(events);
+    public void addAll(Collection<Article> articles) {
+        this.mArticles.addAll(articles);
         notifyDataSetChanged();
     }
 
-    public void add(Event event) {
-        this.mEvents.add(event);
+    public void add(Article article) {
+        this.mArticles.add(article);
         notifyDataSetChanged();
     }
 
-    public void replaceEvents(Collection<Event> events) {
-        mEvents.clear();
-        mEvents.addAll(events);
-        notifyDataSetChanged();
-    }
+    public void replaceArticles(Collection<Article> articles) {
+        mArticles.clear();
+        mArticles.addAll(articles);
+        Collections.sort(mArticles, new Comparator<Article>() {
+            @Override
+            public int compare(Article a, Article b) {
+                return b.getId().compareToIgnoreCase(a.getId());
+            }
+        });
 
-    public void HomeListener(HomeListener listener){
-        mListener = listener;
+        notifyDataSetChanged();
     }
 
     @Override
     public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.event_card, parent, false);
+                .inflate(R.layout.article_card, parent, false);
 
         return new HomeViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(final HomeViewHolder holder, int position) {
-        final Event event = mEvents.get(position);
-        holder.title.setText(event.getTitle());
-        holder.location.setText(event.getLocation());
-        holder.date.setText(event.getDetails().getDate());
-        holder.time.setText(event.getStartTime() + "-" + event.getEndTime());
+        final Article article = mArticles.get(position);
+        holder.title.setText(article.getTitle());
+        holder.except.setText(article.getExcerpt());
 
-        Picasso.with(mContext)
-                .load(Uri.parse(Parse.imageUrl(event.getDetails().getImageUrl())))
-                .into(holder.thumbnail);
+        holder.publicUrl.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.publicUrl.setText(Parse.fromHtml("<a href=\""+ article.getPublicUrl() + "\">"
+                + "More Info" + "</a>"));
+        holder.publicUrl.setClickable(true);
 
-        holder.overflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopupMenu(holder.overflow, event);
-            }
-        });
-    }
-
-    private void showPopupMenu(View view, Event event) {
-        PopupMenu popup = new PopupMenu(mContext, view);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.display, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener(event));
-        popup.show();
-    }
-
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
-        final Event event;
-        public MyMenuItemClickListener(Event event) {
-            this.event = event;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.info:
-                    Toast.makeText(mContext, "Do not miss this events", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-            }
-            return false;
+        if(article.getImageUrl() == null){
+            Picasso.with(mContext)
+                    .load(R.drawable.pic1)
+                    .into(holder.thumbnail);
+        }else {
+            Picasso.with(mContext)
+                    .load(Uri.parse(Parse.imageUrl(article.getImageUrl())))
+                    .into(holder.thumbnail);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mEvents.size();
+        return mArticles.size();
     }
 }

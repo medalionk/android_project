@@ -14,9 +14,9 @@ import ee.ut.demo.R;
 public class HomeViewHolder extends RecyclerView.ViewHolder{
 
     public TextView title;
-    public TextView location;
-    public TextView date;
-    public TextView time;
+    public TextView except;
+    //public TextView imageUrl;
+    public TextView publicUrl;
 
     public ImageView thumbnail;
     public ImageView overflow;
@@ -25,9 +25,8 @@ public class HomeViewHolder extends RecyclerView.ViewHolder{
         super(view);
 
         title = (TextView) view.findViewById(R.id.title);
-        location = (TextView) view.findViewById(R.id.location);
-        date = (TextView) view.findViewById(R.id.date);
-        time = (TextView) view.findViewById(R.id.time);
+        except = (TextView) view.findViewById(R.id.except);
+        publicUrl = (TextView) view.findViewById(R.id.link);
         thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         overflow = (ImageView) view.findViewById(R.id.overflow);
     }

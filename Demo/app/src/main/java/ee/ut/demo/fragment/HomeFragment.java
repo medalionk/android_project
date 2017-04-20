@@ -9,20 +9,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -31,15 +24,13 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 
-import ee.ut.demo.adapter.CustomExpandableListAdapter;
 import ee.ut.demo.adapter.HomeAdapter;
-import ee.ut.demo.adapter.HomeListener;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerFragmentComponent;
 import ee.ut.demo.injector.component.FragmentComponent;
 import ee.ut.demo.injector.module.FragmentModule;
 import ee.ut.demo.injector.module.ActivityModule;
-import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.presenter.FragmentPresenter;
 import ee.ut.demo.mvp.view.FragmentView;
 
@@ -49,8 +40,7 @@ import ee.ut.demo.mvp.view.FragmentView;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeFragment extends Fragment implements FragmentView, HomeListener {
-
+public class HomeFragment extends Fragment implements FragmentView {
 
     @Inject
     FragmentPresenter mFragmentPresenter;
@@ -69,53 +59,41 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    private static final String PAGE = "page_number";
+    //private static final String PAGE = "page_number";
+    //private int mPage = 0;
 
-
-    private int mPage = 0;
-
-
-
-    public static HomeFragment newInstance(int page) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(PAGE, page);
-        fragment.setArguments(bundle);
-        return fragment;
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(PAGE, mPage);
-    }
 
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
             injectDependencies();
-
-            mFragmentPresenter.onCreate();
-
+            //mFragmentPresenter.onCreate();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Calendar notification_time = Calendar.getInstance();
-        notification_time.set(Calendar.MONTH, 3);
-        notification_time.set(Calendar.DAY_OF_MONTH, 30);
-        notification_time.set(Calendar.HOUR_OF_DAY, 23);
-        notification_time.set(Calendar.MINUTE, 59);
-        notification_time.set(Calendar.SECOND, 00);
+//        Calendar notification_time = Calendar.getInstance();
+//        notification_time.set(Calendar.MONTH, 3);
+//        notification_time.set(Calendar.DAY_OF_MONTH, 30);
+//        notification_time.set(Calendar.HOUR_OF_DAY, 23);
+//        notification_time.set(Calendar.MINUTE, 59);
+//        notification_time.set(Calendar.SECOND, 00);
 
 
 
-        long msDiff = notification_time.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+       /* long msDiff = notification_time.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
         long daysDiff = TimeUnit.MILLISECONDS.toDays(msDiff);
 
         if (daysDiff >= 6) {
@@ -138,25 +116,19 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
         else if (daysDiff == 1) {
             mPage = 5;
         }
-        else mPage = 6;
+        else mPage = 6;*/
 
         ButterKnife.bind(this, view);
 
-
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-
 
         initAdapter();
         initRecyclerView();
-
-
         initPresenter();
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -180,19 +152,17 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
         mListener = null;
     }
 
-
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+    private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
         private int spanCount;
         private int spacing;
         private boolean includeEdge;
 
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
             this.spanCount = spanCount;
             this.spacing = spacing;
             this.includeEdge = includeEdge;
@@ -243,7 +213,6 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
 
     private void initPresenter() {
         mFragmentPresenter.attachView(this);
-        mFragmentPresenter.setPage(mPage);
     }
 
     private  void injectDependencies() {
@@ -277,7 +246,6 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-
                 mLoadingView.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.GONE);
                 mErrorListView.setVisibility(View.VISIBLE);
@@ -291,12 +259,12 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
 
     }
 
-    public void addEvents(Collection<Event> events) {
-        mAdapter.replaceEvents(events);
+    public void addArticles(Collection<Article> articles) {
+        mAdapter.replaceArticles(articles);
     }
 
     @Override
-    public void showEvents(final List<Event> events) {
+    public void showEvents(final List<Article> Article) {
 
         Runnable myRunnable = new Runnable() {
             @Override
@@ -305,16 +273,11 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
                 mErrorListView.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
 
-                addEvents(events);
+                addArticles(Article);
             }
         };
 
         getActivity().runOnUiThread(myRunnable);
-    }
-
-
-    public void toggleHome(String id) {
-        //mFragmentPresenter.toggleFavourite(id);
     }
 
     @Override
@@ -326,8 +289,6 @@ public class HomeFragment extends Fragment implements FragmentView, HomeListener
     @Override
     public void onStart() {
         super.onStart();
-        ////
-        //mEventsPresenter.setPage(mPage);
         mFragmentPresenter.onStart();
     }
 }

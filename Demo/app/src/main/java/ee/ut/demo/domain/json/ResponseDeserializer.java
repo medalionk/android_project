@@ -1,22 +1,19 @@
 package ee.ut.demo.domain.json;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import ee.ut.demo.helpers.Parse;
-import ee.ut.demo.injector.module.NetworkModule;
+import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Details;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
@@ -24,20 +21,11 @@ import ee.ut.demo.mvp.model.ResponseWrapper;
 
 public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
 
-    private Type eventType = new TypeToken<Event>() {
-    }.getType();
-
-    private Gson gson = new GsonBuilder()
-            .setDateFormat(NetworkModule.API_DATE_FORMAT)
-            .setFieldNamingPolicy(NetworkModule.API_JSON_NAMING_POLICY)
-            .create();
-
     @Override
     public ResponseWrapper deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
 
         ResponseWrapper responseWrapper = new ResponseWrapper<>();
-
 
         if(json.isJsonArray()){
             JsonArray jsonArray = json.getAsJsonArray();
@@ -52,11 +40,30 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
                 String title = getString(jsonObject.get("title"));
 
                 elements.add(new Element(id, title, updatedAt, false));
-
             }
 
             responseWrapper.body = elements;
-        }else {
+        }
+        else if(json.getAsJsonObject().get("excerpt") != null){
+
+            JsonObject jsonObject = json.getAsJsonObject();
+            String id = getString(jsonObject.get("id"));
+            String title = getString(jsonObject.get("title"));
+            String excerpt = Parse.fromHtml(getString(jsonObject.get("excerpt"))).toString();
+            String publicUrl = getString(jsonObject.get("public_url"));
+
+            jsonObject = jsonObject.get("image").getAsJsonObject();
+            String imageUrl = null;
+            if(jsonObject != null && jsonObject.has("public_url")){
+                imageUrl = getString(jsonObject.get("public_url"));
+            }
+
+            responseWrapper.body = new Article.Builder(title)
+                    .id(id).excerpt(excerpt)
+                    .imageUrl(imageUrl).publicUrl(publicUrl)
+                    .build();
+        }
+        else {
 
             JsonObject jsonObject = json.getAsJsonObject();
             String id = getString(jsonObject.get("id"));
