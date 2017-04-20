@@ -21,8 +21,8 @@
         <item>Home</item>
         <item>Events</item>
         <item>Songs and Event Guide</item>
-        <item>Language</item>
-        <!--<item>Settings</item>-->
+        <item>Send Feedback</item>
+
     </string-array>
 
     <string name="activity_title_about_us">About Us</string>
