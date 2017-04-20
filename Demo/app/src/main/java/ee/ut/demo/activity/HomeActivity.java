@@ -20,10 +20,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,9 +38,9 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.fragment.EventsHomeFragment;
+import ee.ut.demo.fragment.FeedbackFragment;
 import ee.ut.demo.fragment.HomeFragment;
 import ee.ut.demo.fragment.PlaylistFragment;
-import ee.ut.demo.fragment.SettingsFragment;
 import ee.ut.demo.injector.component.AlarmComponent;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerAlarmComponent;
@@ -63,9 +61,8 @@ import static ee.ut.demo.R.id.toolbar;
 public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,PlaylistFragment.OnFragmentInteractionListener{
 
     private static final String TAG_HOME = "home";
-    private static final String TAG_MAP = "map";
+    private static final String TAG_FEEDBACK = "feedback";
     private static final String TAG_PLAYLIST = "playlist";
-    private static final String TAG_SETTINGS = "settings";
     private static final String TAG_EVENTS = "events";
     private final int PERMISSIONS_REQUEST = 0;
 
@@ -206,7 +203,8 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
 
         favouriteComponent.inject(this);
     }
-       private Fragment getHomeFragment() {
+
+    private Fragment getHomeFragment() {
         switch (mNavItemIndex) {
             case 0:
                 return new HomeFragment();
@@ -214,6 +212,8 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
                 return new EventsHomeFragment();
             case 2:
                 return new PlaylistFragment();
+            case 3:
+                return new FeedbackFragment();
             default:
                 return new HomeFragment();
         }
@@ -240,40 +240,25 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
                         CURRENT_TAG = TAG_HOME;
                         break;
 
-                    case R.id.nav_settings:
-                        startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
-                        mDrawer.closeDrawers();
-                        return true;
-
-
                     case R.id.event_Schedules:
                         mNavItemIndex = 1;
                         CURRENT_TAG = TAG_EVENTS;
                         break;
 
                     case R.id.nav_playlist:
-                        /*AssetManager assetManager = getAssets();
-
-                        InputStream in = null;
-                        OutputStream out = null;
-                        File file = new File(getFilesDir(), "songs.pdf");
-                        InputStream is;
-                        try {
-                            is = getAssets().open("songs.pdf");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Uri path = Uri.fromFile(file);
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(path, "application/pdf");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent); */
-                        //Toast.makeText(getApplicationContext(), "Event Playlist", Toast.LENGTH_LONG).show();
-                        //startActivity(new Intent(HomeActivity.this, PlaylistActivity.class));
-                        //mDrawer.closeDrawers();
                         mNavItemIndex = 2;
                         CURRENT_TAG = TAG_PLAYLIST;
                         break;
+
+                    case R.id.nav_feedback:
+                        mNavItemIndex = 3;
+                        CURRENT_TAG = TAG_FEEDBACK;
+                        break;
+
+                    case R.id.nav_settings:
+                        startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+                        mDrawer.closeDrawers();
+                        return true;
 
                     case R.id.sponsors:
                         startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));

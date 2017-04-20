@@ -1,6 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dp" >
+    <RelativeLayout
 
-</LinearLayout>
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/feedback_form_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/feedback"
+            android:textSize="40sp"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/feedback_info"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_marginBottom="16dp"
+            android:text="@string/feedback_info"
+            android:textStyle="normal"
+            android:layout_below="@id/feedback_form_title"/>
+
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/feedback_info"
+            android:id="@+id/feedback_type">
+
+            <RadioButton android:id="@+id/radio_feedback_bug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_feedback_choice_1" />
+            <RadioButton android:id="@+id/radio_feedback_feature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_feedback_choice_2" />
+            <RadioButton android:id="@+id/radio_feedback_general"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rb_feedback_choice_3" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/feedback_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="Your name"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/feedback_type"/>
+
+        <EditText
+            android:id="@+id/feedback_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="Your email"
+            android:inputType="textEmailAddress"
+            android:layout_below="@id/feedback_name"/>
+
+        <EditText
+            android:id="@+id/feedback_comments"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:hint="Your comments"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/feedback_email"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/feedback_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/colorPrimaryDark"
+            android:elevation="4dp"
+            android:paddingLeft="70dp"
+            android:paddingRight="70dp"
+            android:text="Submit"
+            android:textColor="#fff"
+            android:layout_below="@id/feedback_comments"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/developers"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_marginBottom="16dp"
+            android:layout_below="@id/feedback_button"
+            android:text="@string/developers_text"
+            android:textStyle="italic"
+            android:autoLink="email"/>
+    </RelativeLayout>
+</ScrollView>
