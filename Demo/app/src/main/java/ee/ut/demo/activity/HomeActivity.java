@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,7 +57,7 @@ import static ee.ut.demo.R.id.toolbar;
  * @Project: Mobile Application Development Project (MTAT.03.183) Tartu Tudengipäevad Application
  * University of Tartu, Spring 2017.
  */
-public class HomeActivity extends AppCompatActivity implements HomeView, HomeFragment.OnFragmentInteractionListener,PlaylistFragment.OnFragmentInteractionListener{
+public class HomeActivity extends AppCompatActivity implements HomeView {
 
     private static final String TAG_HOME = "home";
     private static final String TAG_FEEDBACK = "feedback";
@@ -104,20 +103,14 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
 
         mActivityTitles = getResources().getStringArray(R.array.home_menu);
 
-
         injectDependencies();
 
         mEventPresenter.onCreate();
 
         ButterKnife.bind(this);
 
-
-
-
         initPresenter();
-
         loadNavHeader();
-
 
         setUpNavigationView();
 
@@ -321,24 +314,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         super.onBackPressed();
     }
 
-    public void toggleHome(String id) {
-        //mEventPresenter.toggleHome(id);
-    }
-
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        if (mNavItemIndex == 0) {
-            //menu to display at home fragment, currently leaving this empty
-        }
-
-        if (mNavItemIndex == 3) {
-            getMenuInflater().inflate(R.menu.notifications, menu);
-        }
-        return true;
-    } */
-
-
     private void initPresenter() {
         mEventPresenter.attachView(this);
     }
@@ -364,8 +339,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-
-
 
                 for(int i = 0; i < events.size() ; i++){
                     events.get(i).getStartTime();
@@ -445,9 +418,4 @@ public class HomeActivity extends AppCompatActivity implements HomeView, HomeFra
     public void showEmpty() {
 
     }
-    @Override
-    public void onFragmentInteraction(Uri uri){
-
-    }
-
 }

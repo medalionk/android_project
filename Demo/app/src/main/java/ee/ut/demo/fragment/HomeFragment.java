@@ -1,9 +1,7 @@
 package ee.ut.demo.fragment;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,13 +21,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
-
 import ee.ut.demo.adapter.HomeAdapter;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerFragmentComponent;
 import ee.ut.demo.injector.component.FragmentComponent;
-import ee.ut.demo.injector.module.FragmentModule;
 import ee.ut.demo.injector.module.ActivityModule;
+import ee.ut.demo.injector.module.FragmentModule;
 import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.presenter.FragmentPresenter;
 import ee.ut.demo.mvp.view.FragmentView;
@@ -44,9 +41,6 @@ public class HomeFragment extends Fragment implements FragmentView {
 
     @Inject
     FragmentPresenter mFragmentPresenter;
-
-    private OnFragmentInteractionListener mListener;
-
 
     private HomeAdapter mAdapter;
 
@@ -89,33 +83,6 @@ public class HomeFragment extends Fragment implements FragmentView {
         initPresenter();
 
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
