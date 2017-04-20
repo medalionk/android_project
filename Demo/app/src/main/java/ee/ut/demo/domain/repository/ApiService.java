@@ -15,7 +15,8 @@ public interface  ApiService {
 
     @GET("{path}")
     Observable<ResponseWrapper<List<Element>>> getElements(@Path("path") String path,
-            @Query("page_id") String pageId, @Query("api_token") String apiToken);
+            @Query("page_id") String pageId, @Query("api_token") String apiToken,
+                                                           @Query("per_page") String perPage);
 
     @GET("elements/{event_id}")
     Observable<ResponseWrapper<Event>> getEvent(@Path("event_id") String eventId,

@@ -10,7 +10,8 @@ import rx.Observable;
 
 public interface Repository {
     Observable<ResponseWrapper<Event>> getEvent(String eventId, String apiToken);
-    Observable<ResponseWrapper<List<Element>>> getElements(String path, String pageId, String apiToken);
+    Observable<ResponseWrapper<List<Element>>> getElements(String path, String pageId,
+                                                           String apiToken, String perPage);
     Observable<ResponseWrapper<Article>> getArticle(String articleId, String apiToken);
 
 

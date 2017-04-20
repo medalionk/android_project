@@ -26,6 +26,7 @@ public class EventsPresenter implements Presenter<EventsView>{
     private static final String EST_PAGE_ID = "est_page_id";
     private static final String API_TOKEN = "api_token";
     private static final String EVENT_PATH = "elements";
+    private static final String PER_PAGE = "250";
 
     private Subscription mGetEventsSubscription;
     private EventsView mEventsView;
@@ -85,7 +86,7 @@ public class EventsPresenter implements Presenter<EventsView>{
         final String pageId = ConfigManager.getProperty(mContext, property);
         final String apiToken = ConfigManager.getProperty(mContext, API_TOKEN);
 
-        mGetEventsSubscription = mRepository.getElements(EVENT_PATH, pageId, apiToken)
+        mGetEventsSubscription = mRepository.getElements(EVENT_PATH, pageId, apiToken, PER_PAGE)
                 .map(new ResponseMappingFunc<List<Element>>())
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, List<Element>>() {

@@ -23,9 +23,9 @@ public class RestRepository implements Repository {
     }
 
     @Override
-    public Observable<ResponseWrapper<List<Element>>> getElements(String path,
-                                                                  String pageId, String apiToken) {
-        return apiService.getElements(path, pageId, apiToken);
+    public Observable<ResponseWrapper<List<Element>>> getElements(String path, String pageId,
+                                                                  String apiToken, String perPage) {
+        return apiService.getElements(path, pageId, apiToken, perPage);
     }
 
     @Override

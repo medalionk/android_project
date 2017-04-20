@@ -12,6 +12,8 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField 'String', 'apiEndpointUrl', '"http://studentdays.ee/admin/api/"'
+        buildConfigField 'String', 'emailAddress1', '"adewale@ut.ee"'
+        buildConfigField 'String', 'emailAddress2', '"bilal.abdullah@ut.ee"'
         //buildConfigField 'String', 'apiEndpointUrl', '"http://studentdays.ee/admin/api/elements?page_id=1786519"'
     }
     buildTypes {

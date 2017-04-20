@@ -25,6 +25,7 @@ public class FragmentPresenter implements Presenter<FragmentView>{
     private static final String EST_ARTICLE_PAGE_ID = "est_article_page_id";
     private static final String API_TOKEN = "api_token";
     private static final String ARTICLE_PATH = "articles";
+    private static final String PER_PAGE = "250";
 
     private Subscription mGetEventsSubscription;
     private FragmentView mFragmentView;
@@ -82,7 +83,7 @@ public class FragmentPresenter implements Presenter<FragmentView>{
         final String pageId = ConfigManager.getProperty(mContext, property);
         final String apiToken = ConfigManager.getProperty(mContext, API_TOKEN);
 
-        mGetEventsSubscription = mRepository.getElements(ARTICLE_PATH, pageId, apiToken)
+        mGetEventsSubscription = mRepository.getElements(ARTICLE_PATH, pageId, apiToken, PER_PAGE)
                 .map(new ResponseMappingFunc<List<Element>>())
                 .subscribeOn(Schedulers.computation())
                 .onErrorReturn(new Func1<Throwable, List<Element>>() {
