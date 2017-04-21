@@ -40,7 +40,7 @@ public class FragmentPresenter implements Presenter<FragmentView>{
 
     @Override
     public void onCreate() {
-        getArticles();
+
     }
 
     @Override

@@ -36,10 +36,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.AboutUsActivity"
-            android:label="@string/activity_title_about_us"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".activity.SponsorsActivity"
