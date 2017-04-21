@@ -24,7 +24,7 @@ import ee.ut.demo.R;
  */
 public class PlaylistFragment extends Fragment implements OnPageChangeListener,OnLoadCompleteListener {
 
-    public static final String SAMPLE_FILE = "songs.pdf";
+    public static final String SAMPLE_FILE = "song.pdf";
     private PDFView pdfView;
     private Integer pageNumber = 0;
     private String pdfFileName;
