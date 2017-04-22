@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,6 +40,9 @@ import ee.ut.demo.mvp.view.EventsView;
  */
 public class EventFragment extends Fragment implements EventsView, FavoriteListener {
 
+    private static final String EVENTS_TAG = "events";
+    private static final String PAGE_TAG = "page_number";
+
     @Inject
     EventsPresenter mEventsPresenter;
 
@@ -56,29 +61,50 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
     @Bind(R.id.error)
     View mErrorListView;
 
-    private static final String PAGE = "page_number";
-
     private CustomExpandableListAdapter mExpandableListAdapter;
+    private ArrayList<Event> mEvents = new ArrayList<>();
     private int mPage = -1;
 
     public static EventFragment newInstance(int page) {
         EventFragment roomFragment = new EventFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(PAGE, page);
+        bundle.putInt(PAGE_TAG, page);
         roomFragment.setArguments(bundle);
 
         return roomFragment;
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mEvents = savedInstanceState.getParcelableArrayList(EVENTS_TAG);
+            mPage = savedInstanceState.getInt(PAGE_TAG);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(PAGE, mPage);
+        outState.putInt(PAGE_TAG, mPage);
+        outState.putParcelableArrayList(EVENTS_TAG, mEvents);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         injectDependencies();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        addEvents(mEvents);
     }
 
     @Override
@@ -92,9 +118,9 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
         initListView();
 
         if (savedInstanceState != null) {
-            mPage = savedInstanceState.getInt(PAGE);
+            mPage = savedInstanceState.getInt(PAGE_TAG);
         } else {
-            mPage = getArguments().getInt(PAGE);
+            mPage = getArguments().getInt(PAGE_TAG);
         }
 
         initPresenter();
@@ -161,8 +187,6 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
     @Override
     public void onStart() {
         super.onStart();
-        ////
-        //mEventsPresenter.setPage(mPage);
         mEventsPresenter.onStart();
     }
 
@@ -172,7 +196,6 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
 
     @Override
     public void showEvents(final List<Event> events) {
-
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -180,6 +203,8 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
                 mRefreshLayout.setRefreshing(false);
                 mLoadingView.setVisibility(View.GONE);
                 mExpandableListView.setVisibility(View.VISIBLE);
+                mEvents.clear();
+                mEvents.addAll(events);
                 addEvents(events);
             }
         };
@@ -203,7 +228,7 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
     }
 
     @Override
-    public void showError() {
+    public void showError(String msg) {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -215,6 +240,7 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
             }
         };
         getActivity().runOnUiThread(myRunnable);
+        makeToast(msg);
     }
 
     @Override
@@ -240,10 +266,7 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
         }else {
             message = "Removed From Favorites!!!";
         }
-        makeToast(message);
-        //Intent myIntent = new Intent(getActivity(), EventsActivity.class);
-        //startActivity(myIntent);
-
+        makeSnackbar(message);
     }
 
     @Override
@@ -251,14 +274,23 @@ public class EventFragment extends Fragment implements EventsView, FavoriteListe
         mEventsPresenter.toggleFavourite(id);
     }
 
-    private void makeToast(final String message){
+    private void makeSnackbar(final String message){
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
                 Snackbar.make(getActivity().getCurrentFocus(), message, Snackbar.LENGTH_LONG)
                         .show();
-//                Toast.makeText(getActivity().getApplication().getApplicationContext(),
-//                        message, Toast.LENGTH_SHORT).show();
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    private void makeToast(final String message){
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity().getApplication().getApplicationContext(),
+                        message, Toast.LENGTH_SHORT).show();
             }
         };
         getActivity().runOnUiThread(myRunnable);

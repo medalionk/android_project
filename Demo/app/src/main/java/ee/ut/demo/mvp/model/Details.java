@@ -1,10 +1,14 @@
 package ee.ut.demo.mvp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Bilal Abdullah on 3/18/2017.
  */
 
-public class Details {
+public class Details implements Parcelable {
+
     private final String description;
     private final String organizer;
     private final String additionalInfo;
@@ -24,6 +28,30 @@ public class Details {
         publicUrl = builder.publicUrl;
         date = builder.date;
     }
+
+    protected Details(Parcel in) {
+
+        description = in.readString();
+        organizer = in.readString();
+        additionalInfo = in.readString();
+        songBook = in.readString();
+        imageUrl = in.readString();
+        ticket = in.readString();
+        publicUrl = in.readString();
+        date = in.readString();
+    }
+
+    public static final Creator<Details> CREATOR = new Creator<Details>() {
+        @Override
+        public Details createFromParcel(Parcel in) {
+            return new Details(in);
+        }
+
+        @Override
+        public Details[] newArray(int size) {
+            return new Details[size];
+        }
+    };
 
     public String getDescription() {
         return description;
@@ -55,6 +83,23 @@ public class Details {
 
     public String getDate() {
         return date;
+    }
+
+    @Override
+    public int describeContents() {
+        return 1;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        dest.writeString(organizer);
+        dest.writeString(additionalInfo);
+        dest.writeString(songBook);
+        dest.writeString(imageUrl);
+        dest.writeString(ticket);
+        dest.writeString(publicUrl);
+        dest.writeString(date);
     }
 
     public static class Builder{

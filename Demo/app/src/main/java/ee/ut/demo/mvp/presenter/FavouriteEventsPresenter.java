@@ -3,6 +3,7 @@ package ee.ut.demo.mvp.presenter;
 import java.util.List;
 
 import ee.ut.demo.domain.database.Database;
+import ee.ut.demo.helpers.Message;
 import ee.ut.demo.mvp.model.Event;
 import ee.ut.demo.mvp.view.FavouriteEventsView;
 import rx.Subscription;
@@ -16,10 +17,9 @@ import rx.schedulers.Schedulers;
 
 public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
 
-    private Subscription mGetFavouriteEventsSubscription;
+    private Subscription mSubscription;
     private FavouriteEventsView mFavouriteEventsView;
     private Database mDatabase;
-
 
     public FavouriteEventsPresenter(Database database) {
         mDatabase = database;
@@ -37,8 +37,8 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
 
     @Override
     public void onStop() {
-        if (mGetFavouriteEventsSubscription != null && !mGetFavouriteEventsSubscription.isUnsubscribed()) {
-            mGetFavouriteEventsSubscription.unsubscribe();
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
         }
     }
 
@@ -52,16 +52,16 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
         this.mFavouriteEventsView = view;
     }
 
-    void getFavouriteEvents(){
+    private void getFavouriteEvents(){
 
         mFavouriteEventsView.showLoading();
-        mGetFavouriteEventsSubscription = mDatabase.getFavouriteEvents()
+        mSubscription = mDatabase.getFavouriteEvents()
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, List<Event>>() {
                     @Override
                     public List<Event> call(Throwable throwable) {
                         throwable.printStackTrace();
-                        mFavouriteEventsView.showEmpty();
+                        mFavouriteEventsView.showError(Message.ERR_MSG_DB);
                         return null;
                     }
                 })
@@ -78,13 +78,13 @@ public class FavouriteEventsPresenter implements Presenter<FavouriteEventsView>{
     }
 
     public void toggleFavourite(String id){
-        mGetFavouriteEventsSubscription = mDatabase.toggleFavourite(id)
+        mSubscription = mDatabase.toggleFavourite(id)
                 .subscribeOn(Schedulers.io())
                 .onErrorReturn(new Func1<Throwable, Integer>() {
                     @Override
                     public Integer call(Throwable throwable) {
                         throwable.printStackTrace();
-                        mFavouriteEventsView.showError();
+                        mFavouriteEventsView.showError(Message.ERR_MSG_DB);
                         return null;
                     }
                 })

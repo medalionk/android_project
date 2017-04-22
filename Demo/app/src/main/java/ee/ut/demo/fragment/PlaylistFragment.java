@@ -34,7 +34,7 @@ public class PlaylistFragment extends Fragment implements OnPageChangeListener,O
 
     }
 
-    public static PlaylistFragment newInstance(String param1, String param2) {
+    public static PlaylistFragment newInstance() {
         return new PlaylistFragment();
     }
 

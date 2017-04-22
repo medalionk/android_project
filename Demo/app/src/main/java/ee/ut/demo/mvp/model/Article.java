@@ -1,10 +1,13 @@
 package ee.ut.demo.mvp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Bilal Abdullah on 4/19/2017.
  */
 
-public class Article {
+public class Article implements Parcelable {
     private final String id;
     private final String title;
     private final String excerpt;
@@ -18,6 +21,26 @@ public class Article {
         imageUrl = builder.imageUrl;
         publicUrl = builder.publicUrl;
     }
+
+    protected Article(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        excerpt = in.readString();
+        imageUrl = in.readString();
+        publicUrl = in.readString();
+    }
+
+    public static final Creator<Article> CREATOR = new Creator<Article>() {
+        @Override
+        public Article createFromParcel(Parcel in) {
+            return new Article(in);
+        }
+
+        @Override
+        public Article[] newArray(int size) {
+            return new Article[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -37,6 +60,20 @@ public class Article {
 
     public String getPublicUrl() {
         return publicUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(excerpt);
+        dest.writeString(imageUrl);
+        dest.writeString(publicUrl);
     }
 
     public static class Builder{

@@ -59,10 +59,15 @@ import static ee.ut.demo.R.id.toolbar;
  */
 public class HomeActivity extends AppCompatActivity implements HomeView {
 
+    private static final String ARG_FRAGMENT = "fragment";
+    private static final String ARG_CURRENT_PAGE = "currentPage";
+    private static final String ARG_NAV_IDX = "navItemIndex";
+
     private static final String TAG_HOME = "home";
     private static final String TAG_FEEDBACK = "feedback";
     private static final String TAG_PLAYLIST = "playlist";
     private static final String TAG_EVENTS = "events";
+
     private final int PERMISSIONS_REQUEST = 0;
 
     public static String CURRENT_TAG = TAG_HOME;
@@ -73,6 +78,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
     private View mNavHeader;
     private ImageView mImgNavHeaderBg;
     private Toolbar mToolbar;
+    private Fragment mFragment;
 
     private String[] mActivityTitles;
     ArrayList<Integer> Day = new ArrayList<Integer>();
@@ -117,11 +123,25 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
         if (savedInstanceState == null) {
             mNavItemIndex = 0;
             CURRENT_TAG = TAG_HOME;
-            loadHomeFragment();
+            mFragment = getHomeFragment();
+        }else {
+            mFragment = getSupportFragmentManager().getFragment(savedInstanceState, ARG_FRAGMENT);
+            CURRENT_TAG = savedInstanceState.getString(ARG_CURRENT_PAGE);
+            mNavItemIndex = savedInstanceState.getInt(ARG_NAV_IDX);
         }
 
+        loadHomeFragment();
         requestPermission();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        getSupportFragmentManager().putFragment(outState, ARG_FRAGMENT, mFragment);
+        outState.putString(ARG_CURRENT_PAGE, CURRENT_TAG);
+        outState.putInt(ARG_NAV_IDX, mNavItemIndex);
     }
 
     private void loadNavHeader() {
@@ -161,16 +181,20 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
 
         selectNavMenu();
         setToolbarTitle();
+        mDrawer.closeDrawers();
 
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
-            mDrawer.closeDrawers();
             return;
         }
 
+        showFragment(mFragment);
+    }
+
+    private void showFragment(final Fragment fragment){
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
-                Fragment fragment = getHomeFragment();
+
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
@@ -179,9 +203,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
         };
 
         mHandler.post(mPendingRunnable);
-
         mDrawer.closeDrawers();
-
         invalidateOptionsMenu();
     }
 
@@ -200,15 +222,15 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
     private Fragment getHomeFragment() {
         switch (mNavItemIndex) {
             case 0:
-                return new HomeFragment();
+                return HomeFragment.newInstance();
             case 1:
-                return new EventsHomeFragment();
+                return EventsHomeFragment.newInstance();
             case 2:
-                return new PlaylistFragment();
+                return PlaylistFragment.newInstance();
             case 3:
-                return new FeedbackFragment();
+                return FeedbackFragment.newInstance();
             default:
-                return new HomeFragment();
+                return HomeFragment.newInstance();
         }
     }
 
@@ -267,8 +289,9 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
                 } else {
                     menuItem.setChecked(true);
                 }
-                menuItem.setChecked(true);
+                //menuItem.setChecked(true);
 
+                mFragment = getHomeFragment();
                 loadHomeFragment();
 
                 return true;
@@ -306,6 +329,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
             if (mNavItemIndex != 0) {
                 mNavItemIndex = 0;
                 CURRENT_TAG = TAG_HOME;
+                mFragment = getHomeFragment();
                 loadHomeFragment();
                 return;
             }
@@ -333,7 +357,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
 
 
     @Override
-    public void showFavouriteEvents(final List<Event> events) {
+    public void addFavouriteEvents(final List<Event> events) {
                 Time.clear();
                 Day.clear();
         Runnable myRunnable = new Runnable() {
@@ -410,7 +434,7 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
     }
 
     @Override
-    public void showError() {
+    public void showError(String msg) {
 
     }
 

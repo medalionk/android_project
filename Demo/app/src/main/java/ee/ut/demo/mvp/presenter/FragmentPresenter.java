@@ -1,16 +1,16 @@
 package ee.ut.demo.mvp.presenter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import java.util.List;
 
 import ee.ut.demo.domain.repository.Repository;
 import ee.ut.demo.domain.repository.ResponseMappingFunc;
 import ee.ut.demo.helpers.ConfigManager;
+import ee.ut.demo.helpers.Message;
 import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Element;
+import ee.ut.demo.mvp.model.PageType;
 import ee.ut.demo.mvp.view.FragmentView;
 import rx.Observable;
 import rx.Subscription;
@@ -21,8 +21,6 @@ import rx.schedulers.Schedulers;
 
 public class FragmentPresenter implements Presenter<FragmentView>{
 
-    private static final String ENG_ARTICLE_PAGE_ID = "eng_article_page_id";
-    private static final String EST_ARTICLE_PAGE_ID = "est_article_page_id";
     private static final String API_TOKEN = "api_token";
     private static final String ARTICLE_PATH = "articles";
     private static final String PER_PAGE = "250";
@@ -69,88 +67,87 @@ public class FragmentPresenter implements Presenter<FragmentView>{
 
         if (mArticles != null) {
             mFragmentView.showEvents(mArticles);
+            return;
         } else {
             mFragmentView.showLoading();
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-
-        String language = prefs.getString("event_language", "");
-        String property;
-        if(language.equals("0")) property = EST_ARTICLE_PAGE_ID;
-        else property = ENG_ARTICLE_PAGE_ID;
-
-        final String pageId = ConfigManager.getProperty(mContext, property);
+        final String pageId = ConfigManager.getPageID(mContext, PageType.ARTICLE);
         final String apiToken = ConfigManager.getProperty(mContext, API_TOKEN);
 
-        mGetEventsSubscription = mRepository.getElements(ARTICLE_PATH, pageId, apiToken, PER_PAGE)
-                .map(new ResponseMappingFunc<List<Element>>())
-                .subscribeOn(Schedulers.computation())
-                .onErrorReturn(new Func1<Throwable, List<Element>>() {
-                    @Override
-                    public List<Element> call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        return null;
-                    }
-                })
-
-                .flatMap(new Func1<List<Element>, Observable<Element>>() {
-                    @Override
-                    public Observable<Element> call(List<Element> elements) {
-                        return Observable.from(elements)
-                                .subscribeOn(Schedulers.computation())
-                                .onErrorReturn(new Func1<Throwable, Element>() {
-                                    @Override
-                                    public Element call(Throwable throwable) {
-                                        throwable.printStackTrace();
-                                        return null;
-                                    }
-                                });
-                    }
-                })
-
-                .flatMap(new Func1<Element, Observable<Article>>() {
-                    @Override
-                    public Observable<Article> call(Element element) {
-                        return Observable.zip(Observable.just(element),
-                                mRepository.getArticle(element.getId(), apiToken)
-                                        .map(new ResponseMappingFunc<Article>())
-                                        .subscribeOn(Schedulers.io())
-                                        .onErrorReturn(new Func1<Throwable, Article>() {
-                                            @Override
-                                            public Article call(Throwable throwable) {
-                                                throwable.printStackTrace();
-                                                mFragmentView.showError();
-                                                return null;
-                                            }
-                                        }),
-                                new Func2<Element, Article, Article>() {
-                                    @Override
-                                    public Article call(Element tvShow, Article article) {
-                                        return article;
-                                    }
-                                });
-
-                    }
-                })
-                .toList()
-                .subscribe(new Action1<List<Article>>() {
-                    @Override
-                    public void call(List<Article> articles) {
-                        if (articles != null && articles.size() > 0) {
-                            mArticles = articles;
-                            mFragmentView.showEvents(articles);
-                        }else {
-                            mFragmentView.showEmpty();
+        try {
+            mGetEventsSubscription = mRepository.getElements(ARTICLE_PATH, pageId, apiToken, PER_PAGE)
+                    .map(new ResponseMappingFunc<List<Element>>())
+                    .subscribeOn(Schedulers.computation())
+                    .onErrorReturn(new Func1<Throwable, List<Element>>() {
+                        @Override
+                        public List<Element> call(Throwable throwable) {
+                            throwable.printStackTrace();
+                            mFragmentView.showError(Message.ERR_MSG_INTERNET);
+                            return null;
                         }
-                    }
-                });
+                    })
 
+                    .flatMap(new Func1<List<Element>, Observable<Element>>() {
+                        @Override
+                        public Observable<Element> call(List<Element> elements) {
+                            return Observable.from(elements)
+                                    .subscribeOn(Schedulers.computation())
+                                    .onErrorReturn(new Func1<Throwable, Element>() {
+                                        @Override
+                                        public Element call(Throwable throwable) {
+                                            throwable.printStackTrace();
+                                            mFragmentView.showError(Message.ERR_MSG_INTERNET);
+                                            return null;
+                                        }
+                                    });
+                        }
+                    })
 
+                    .flatMap(new Func1<Element, Observable<Article>>() {
+                        @Override
+                        public Observable<Article> call(Element element) {
+                            return Observable.zip(Observable.just(element),
+                                    mRepository.getArticle(element.getId(), apiToken)
+                                            .map(new ResponseMappingFunc<Article>())
+                                            .subscribeOn(Schedulers.io())
+                                            .onErrorReturn(new Func1<Throwable, Article>() {
+                                                @Override
+                                                public Article call(Throwable throwable) {
+                                                    throwable.printStackTrace();
+                                                    mFragmentView.showError(Message.ERR_MSG_INTERNET);
+                                                    return null;
+                                                }
+                                            }),
+                                    new Func2<Element, Article, Article>() {
+                                        @Override
+                                        public Article call(Element tvShow, Article article) {
+                                            return article;
+                                        }
+                                    });
+
+                        }
+                    })
+                    .toList()
+                    .subscribe(new Action1<List<Article>>() {
+                        @Override
+                        public void call(List<Article> articles) {
+                            if (articles != null && articles.size() > 0) {
+                                mArticles = articles;
+                                mFragmentView.showEvents(articles);
+                            }else {
+                                mFragmentView.showEmpty();
+                            }
+                        }
+                    });
+        }catch (Exception ex){
+            mFragmentView.showError(Message.ERR_MSG_INTERNET);
+        }
     }
 
     public void onRefresh() {
         mArticles = null;
+
         getArticles();
     }
 }

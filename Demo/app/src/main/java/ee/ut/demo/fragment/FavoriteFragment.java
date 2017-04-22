@@ -159,7 +159,7 @@ public class FavoriteFragment extends Fragment implements FavouriteEventsView, F
     }
 
     @Override
-    public void showError() {
+    public void showError(String msg) {
 
     }
 

@@ -8,5 +8,5 @@ import ee.ut.demo.mvp.model.Event;
  * Created by firars group on 4/7/2017.
  */
 public interface HomeView extends View{
-    void showFavouriteEvents(List<Event> events);
+    void addFavouriteEvents(List<Event> events);
 }

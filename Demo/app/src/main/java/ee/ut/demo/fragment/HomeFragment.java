@@ -11,7 +11,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +24,8 @@ import butterknife.ButterKnife;
 import ee.ut.demo.R;
 import ee.ut.demo.TartuApplication;
 import ee.ut.demo.adapter.HomeAdapter;
+import ee.ut.demo.helpers.Connection;
+import ee.ut.demo.helpers.Message;
 import ee.ut.demo.injector.component.ApplicationComponent;
 import ee.ut.demo.injector.component.DaggerFragmentComponent;
 import ee.ut.demo.injector.component.FragmentComponent;
@@ -39,10 +43,10 @@ import ee.ut.demo.mvp.view.FragmentView;
  */
 public class HomeFragment extends Fragment implements FragmentView {
 
+    private static final String ARTICLES_TAG = "articles";
+
     @Inject
     FragmentPresenter mFragmentPresenter;
-
-    private HomeAdapter mAdapter;
 
     @Bind(R.id.loading)
     View mLoadingView;
@@ -53,19 +57,19 @@ public class HomeFragment extends Fragment implements FragmentView {
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @Bind(R.id.empty_list)
+    View mEmptyListView;
+
+    private HomeAdapter mAdapter;
+    private ArrayList<Article> mArticles = new ArrayList<>();
+
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
             injectDependencies();
     }
 
@@ -83,6 +87,123 @@ public class HomeFragment extends Fragment implements FragmentView {
         initPresenter();
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mArticles = savedInstanceState.getParcelableArrayList(ARTICLES_TAG);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(ARTICLES_TAG, mArticles);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mFragmentPresenter.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(Connection.isInternetAvailable(getContext())) mFragmentPresenter.onStart();
+        else showError(Message.ERR_MSG_NO_INTERNET);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        addArticles(mArticles);
+    }
+
+    @Override
+    public void showLoading() {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mErrorListView.setVisibility(View.GONE);
+                mEmptyListView.setVisibility(View.GONE);
+                mLoadingView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    @Override
+    public void showError(String msg) {
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mLoadingView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                mEmptyListView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.VISIBLE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+        makeToast(msg);
+    }
+
+    @Override
+    public void showEmpty() {
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mLoadingView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.GONE);
+                mEmptyListView.setVisibility(View.VISIBLE);
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    @Override
+    public void showEvents(final List<Article> articles) {
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mEmptyListView.setVisibility(View.GONE);
+                mLoadingView.setVisibility(View.GONE);
+                mErrorListView.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mArticles.clear();
+                mArticles.addAll(articles);
+                addArticles(articles);
+            }
+        };
+
+        getActivity().runOnUiThread(myRunnable);
+    }
+
+    public void addArticles(Collection<Article> articles) {
+        mAdapter.replaceArticles(articles);
+    }
+
+    private void makeToast(final String message){
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getActivity().getApplication().getApplicationContext(),
+                        message, Toast.LENGTH_LONG).show();
+            }
+        };
+        getActivity().runOnUiThread(myRunnable);
     }
 
     private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -127,7 +248,6 @@ public class HomeFragment extends Fragment implements FragmentView {
     private void initAdapter() {
         if (mAdapter == null) {
             mAdapter = new HomeAdapter(getActivity());
-            //mAdapter.setHomeListener(this);
         }
     }
 
@@ -154,70 +274,5 @@ public class HomeFragment extends Fragment implements FragmentView {
                 .build();
 
         fragmentComponent.inject(this);
-    }
-
-    @Override
-    public void showLoading() {
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mErrorListView.setVisibility(View.GONE);
-
-                mLoadingView.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.GONE);
-            }
-        };
-        getActivity().runOnUiThread(myRunnable);
-    }
-
-    @Override
-    public void showError() {
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLoadingView.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.GONE);
-                mErrorListView.setVisibility(View.VISIBLE);
-            }
-        };
-        getActivity().runOnUiThread(myRunnable);
-    }
-
-    @Override
-    public void showEmpty() {
-
-    }
-
-    public void addArticles(Collection<Article> articles) {
-        mAdapter.replaceArticles(articles);
-    }
-
-    @Override
-    public void showEvents(final List<Article> Article) {
-
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLoadingView.setVisibility(View.GONE);
-                mErrorListView.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-
-                addArticles(Article);
-            }
-        };
-
-        getActivity().runOnUiThread(myRunnable);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mFragmentPresenter.onStop();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mFragmentPresenter.onStart();
     }
 }

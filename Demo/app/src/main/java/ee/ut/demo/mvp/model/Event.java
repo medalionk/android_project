@@ -1,6 +1,10 @@
 package ee.ut.demo.mvp.model;
 
-public class Event {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Event implements Parcelable {
+
     private final String id;
     private final String startTime;
     private final String endTime;
@@ -21,6 +25,29 @@ public class Event {
         favorite = builder.favorite;
         details = builder.details;
     }
+
+    protected Event(Parcel in) {
+        id = in.readString();
+        startTime = in.readString();
+        endTime = in.readString();
+        title = in.readString();
+        location = in.readString();
+        updatedAt = in.readString();
+        favorite = in.readByte() != 0;
+        details = in.readParcelable(Details.class.getClassLoader());
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -56,6 +83,22 @@ public class Event {
 
     public Details getDetails() {
         return details;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeString(title);
+        dest.writeString(location);
+        dest.writeString(updatedAt);
+        dest.writeParcelable(details, 1);
     }
 
     public static class Builder{

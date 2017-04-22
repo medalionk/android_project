@@ -31,8 +31,8 @@ public class EventsHomeFragment extends Fragment{
     private ExpandableListPagerAdapter mAdapter;
     private Fragment mFragment;
 
-    public EventsHomeFragment() {
-
+    public static EventsHomeFragment newInstance() {
+        return new EventsHomeFragment();
     }
 
     @Override

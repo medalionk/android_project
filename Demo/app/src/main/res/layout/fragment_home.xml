@@ -34,8 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/empty_list_icon"
-            android:layout_centerHorizontal="true"
-            android:text="@string/no_event" />
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -56,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/error_icon"
             android:layout_centerHorizontal="true"
-            android:text="@string/loading_error" />
+            android:text="@string/loading_error"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -92,5 +91,4 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:scrollbars="vertical" />
-
 </RelativeLayout>

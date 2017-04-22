@@ -35,7 +35,7 @@
 
     <string name="hello_blank_fragment">Blank</string>
 
-    <string name="loading_error">Error Loading Events</string>
+    <string name="loading_error">Oops!</string>
     <string name="events_loading">Loading!!!</string>
     <string name="no_event">No Events</string>
 

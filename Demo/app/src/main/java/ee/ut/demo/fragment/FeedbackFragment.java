@@ -42,6 +42,10 @@ public class FeedbackFragment extends Fragment {
 
     private String mFeedbackType = null;
 
+    public static FeedbackFragment newInstance() {
+        return new FeedbackFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
