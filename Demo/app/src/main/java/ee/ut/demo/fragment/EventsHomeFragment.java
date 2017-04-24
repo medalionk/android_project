@@ -95,7 +95,7 @@ public class EventsHomeFragment extends Fragment{
                     return true;
                 case R.id.navigation_map:
 
-                    mFragment = new MapFragment();
+                    mFragment = MapFragment.newInstance();
                     fragmentTransaction.replace(R.id.frame, mFragment);
                     fragmentTransaction.commitAllowingStateLoss();
 

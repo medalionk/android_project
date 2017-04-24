@@ -76,7 +76,7 @@ public class FavoriteFragment extends Fragment implements FavouriteEventsView, F
 
         mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
 
-        injectDependencies();
+        //injectDependencies();
         mEventPresenter.onCreate();
 
         ButterKnife.bind(this, rootView);

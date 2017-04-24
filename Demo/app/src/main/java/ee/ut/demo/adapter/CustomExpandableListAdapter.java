@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,20 +62,21 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     public void addAll(Collection<Event> events) {
         this.mEvents.addAll(events);
+        Collections.sort(mEvents);
         notifyDataSetChanged();
     }
 
     public void add(Event event) {
         this.mEvents.add(event);
+        Collections.sort(mEvents);
         notifyDataSetChanged();
     }
 
     public void replaceEvents(Collection<Event> events) {
-
         mEvents.clear();
         mEvents.addAll(events);
+        Collections.sort(mEvents);
         notifyDataSetChanged();
-
     }
 
     @Override

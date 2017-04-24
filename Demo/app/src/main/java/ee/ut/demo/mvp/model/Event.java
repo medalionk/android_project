@@ -2,8 +2,14 @@ package ee.ut.demo.mvp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-public class Event implements Parcelable {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class Event implements Parcelable, Comparable<Event> {
 
     private final String id;
     private final String startTime;
@@ -99,6 +105,23 @@ public class Event implements Parcelable {
         dest.writeString(location);
         dest.writeString(updatedAt);
         dest.writeParcelable(details, 1);
+    }
+
+    @Override
+    public int compareTo(@NonNull Event o) {
+        return toDate(startTime).compareTo(toDate(o.getStartTime()));
+    }
+
+    private Date toDate(String timeStr){
+
+        Date date = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        try {
+            date = dateFormat.parse(timeStr);
+        } catch (ParseException e) {
+        }
+
+        return date;
     }
 
     public static class Builder{

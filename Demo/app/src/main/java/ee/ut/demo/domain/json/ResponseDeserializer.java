@@ -1,6 +1,7 @@
 package ee.ut.demo.domain.json;
 
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -17,6 +18,7 @@ import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Details;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.model.PlaceDetail;
 import ee.ut.demo.mvp.model.ResponseWrapper;
 
 public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
@@ -27,7 +29,30 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
 
         ResponseWrapper responseWrapper = new ResponseWrapper<>();
 
-        if(json.isJsonArray()){
+
+        if (json.isJsonObject() && json.getAsJsonObject().get("results") != null){
+            JsonArray jsonArray = json.getAsJsonObject().get("results").getAsJsonArray();
+
+            if(jsonArray.size() > 0){
+                JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
+                String id = getString(jsonObject.get("id"));
+                JsonObject locationObject = jsonObject.get("geometry").getAsJsonObject()
+                        .get("location").getAsJsonObject();
+                double lat = Double.parseDouble(getString(locationObject.get("lat")));
+                double lng = Double.parseDouble(getString(locationObject.get("lng")));
+                LatLng location = new LatLng(lat, lng);
+                String name = getString(jsonObject.get("name"));
+                String placeId = getString(jsonObject.get("place_id"));
+                String reference = getString(jsonObject.get("reference"));
+
+                PlaceDetail placeDetail = new PlaceDetail.Builder().id(id)
+                        .location(location).name(name)
+                        .placeId(placeId).reference(reference).build();
+
+                responseWrapper.body = placeDetail;
+            }
+        }
+        else if(json.isJsonArray()){
             JsonArray jsonArray = json.getAsJsonArray();
             List<Element> elements = new ArrayList<>();
 

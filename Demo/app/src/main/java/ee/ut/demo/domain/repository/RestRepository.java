@@ -5,6 +5,7 @@ import java.util.List;
 import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.model.PlaceDetail;
 import ee.ut.demo.mvp.model.ResponseWrapper;
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -43,5 +44,10 @@ public class RestRepository implements Repository {
     @Override
     public Observable<ResponseWrapper<List<Element>>> getHomeElements(String pageId) {
         return apiService.getHomeElements(pageId);
+    }
+
+    @Override
+    public Observable<ResponseWrapper<PlaceDetail>> mapPlaceTextSearch(String query, String key) {
+        return apiService.mapPlaceTextSearch(query, key);
     }
 }

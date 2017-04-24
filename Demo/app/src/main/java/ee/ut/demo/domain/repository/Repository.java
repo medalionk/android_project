@@ -5,6 +5,7 @@ import java.util.List;
 import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.model.PlaceDetail;
 import ee.ut.demo.mvp.model.ResponseWrapper;
 import rx.Observable;
 
@@ -18,7 +19,6 @@ public interface Repository {
     Observable<ResponseWrapper<Event>> getHome(String eventId, String apiToken);
     Observable<ResponseWrapper<List<Element>>> getHomeElements(String pageId);
 
-    //Observable<ResponseWrapper<List<Element>>> getArticleElements(String pageId);
-
+    Observable<ResponseWrapper<PlaceDetail>> mapPlaceTextSearch(String query, String key);
 }
 

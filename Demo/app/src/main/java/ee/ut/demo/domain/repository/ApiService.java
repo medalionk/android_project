@@ -5,6 +5,7 @@ import java.util.List;
 import ee.ut.demo.mvp.model.Article;
 import ee.ut.demo.mvp.model.Element;
 import ee.ut.demo.mvp.model.Event;
+import ee.ut.demo.mvp.model.PlaceDetail;
 import ee.ut.demo.mvp.model.ResponseWrapper;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -28,7 +29,12 @@ public interface  ApiService {
 
     @GET("articles")
     Observable<ResponseWrapper<List<Element>>> getArticleElements(@Query("page_id") String pageId);
+
     @GET("articles/{article_id}")
     Observable<ResponseWrapper<Article>> getArticle(@Path("article_id") String articleId,
                                                     @Query("api_token") String apiToken);
+
+    @GET("https://maps.googleapis.com/maps/api/place/textsearch/json")
+    Observable<ResponseWrapper<PlaceDetail>> mapPlaceTextSearch(@Query("query") String query,
+                                                                @Query("key") String key);
 }

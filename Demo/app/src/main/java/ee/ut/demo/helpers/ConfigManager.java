@@ -19,6 +19,7 @@ public class ConfigManager {
     private static final String ENG_EVENT_PAGE = "eng_event_page_id";
     private static final String EST_EVENT_PAGE = "est_event_page_id";
     private static final String PROPERTIES_FILE = "app.properties";
+    private static final String PREF_LANGUAGE = "event_language";
     private static final String EST_IDX = "0";
     private static final String ENG_IDX = "1";
 
@@ -30,7 +31,7 @@ public class ConfigManager {
 
     public static String getPageID(Context context, PageType pageType) {
 
-        String language = getPreferredLanguage(context);
+        String language = getPrefsValue(context, PREF_LANGUAGE);
         String property;
         if(pageType == PageType.ARTICLE) property = getArticlePropertyName(language);
         else property = getEventPropertyName(language);
@@ -38,6 +39,18 @@ public class ConfigManager {
         PropertyReader propertyReader = new PropertyReader(context);
         Properties properties = propertyReader.getMyProperties(PROPERTIES_FILE);
         return properties.getProperty(property);
+    }
+
+    public static String getPrefsValue(Context context, String key){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(key, "");
+    }
+
+    public static void putPrefsValueString(Context context, String key, String value){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.apply();
     }
 
     private static String getArticlePropertyName(String language){
@@ -48,10 +61,5 @@ public class ConfigManager {
     private static String getEventPropertyName(String language){
         if(language.equals(EST_IDX)) return EST_EVENT_PAGE;
         else return ENG_EVENT_PAGE;
-    }
-
-    private static String getPreferredLanguage(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("event_language", "");
     }
 }
