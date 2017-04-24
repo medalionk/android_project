@@ -29,21 +29,20 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
 
         ResponseWrapper responseWrapper = new ResponseWrapper<>();
 
-
         if (json.isJsonObject() && json.getAsJsonObject().get("results") != null){
             JsonArray jsonArray = json.getAsJsonObject().get("results").getAsJsonArray();
 
             if(jsonArray.size() > 0){
                 JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-                String id = getString(jsonObject.get("id"));
+                String id = Parse.getString(jsonObject.get("id"));
                 JsonObject locationObject = jsonObject.get("geometry").getAsJsonObject()
                         .get("location").getAsJsonObject();
-                double lat = Double.parseDouble(getString(locationObject.get("lat")));
-                double lng = Double.parseDouble(getString(locationObject.get("lng")));
+                double lat = Double.parseDouble(Parse.getString(locationObject.get("lat")));
+                double lng = Double.parseDouble(Parse.getString(locationObject.get("lng")));
                 LatLng location = new LatLng(lat, lng);
-                String name = getString(jsonObject.get("name"));
-                String placeId = getString(jsonObject.get("place_id"));
-                String reference = getString(jsonObject.get("reference"));
+                String name = Parse.getString(jsonObject.get("name"));
+                String placeId = Parse.getString(jsonObject.get("place_id"));
+                String reference = Parse.getString(jsonObject.get("reference"));
 
                 PlaceDetail placeDetail = new PlaceDetail.Builder().id(id)
                         .location(location).name(name)
@@ -60,9 +59,9 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
 
                 JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
 
-                String id = getString(jsonObject.get("id"));
-                String updatedAt = getString(jsonObject.get("updated_at"));
-                String title = getString(jsonObject.get("title"));
+                String id = Parse.getString(jsonObject.get("id"));
+                String updatedAt = Parse.getString(jsonObject.get("updated_at"));
+                String title = Parse.getString(jsonObject.get("title"));
 
                 elements.add(new Element(id, title, updatedAt, false));
             }
@@ -72,15 +71,15 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
         else if(json.getAsJsonObject().get("excerpt") != null){
 
             JsonObject jsonObject = json.getAsJsonObject();
-            String id = getString(jsonObject.get("id"));
-            String title = getString(jsonObject.get("title"));
-            String excerpt = Parse.fromHtml(getString(jsonObject.get("excerpt"))).toString();
-            String publicUrl = getString(jsonObject.get("public_url"));
+            String id = Parse.getString(jsonObject.get("id"));
+            String title = Parse.getString(jsonObject.get("title"));
+            String excerpt = Parse.fromHtml(Parse.getString(jsonObject.get("excerpt"))).toString();
+            String publicUrl = Parse.getString(jsonObject.get("public_url"));
 
             jsonObject = jsonObject.get("image").getAsJsonObject();
             String imageUrl = null;
             if(jsonObject != null && jsonObject.has("public_url")){
-                imageUrl = getString(jsonObject.get("public_url"));
+                imageUrl = Parse.getString(jsonObject.get("public_url"));
             }
 
             responseWrapper.body = new Article.Builder(title)
@@ -91,27 +90,27 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
         else {
 
             JsonObject jsonObject = json.getAsJsonObject();
-            String id = getString(jsonObject.get("id"));
-            String title = getString(jsonObject.get("title"));
-            String updatedAt = getString(jsonObject.get("updated_at"));
-            String public_url = getString(jsonObject.get("public_url"));
+            String id = Parse.getString(jsonObject.get("id"));
+            String title = Parse.getString(jsonObject.get("title"));
+            String updatedAt = Parse.getString(jsonObject.get("updated_at"));
+            String public_url = Parse.getString(jsonObject.get("public_url"));
 
             jsonObject = jsonObject.get("values").getAsJsonObject();
 
-            String startHr = getString(jsonObject.get("algusaegtund"));
-            String startMin = getString(jsonObject.get("algusaegmin"));
-            String endHr = getString(jsonObject.get("loppaegtund"));
-            String endMin = getString(jsonObject.get("loppaegmin"));
+            String startHr = Parse.getString(jsonObject.get("algusaegtund"));
+            String startMin = Parse.getString(jsonObject.get("algusaegmin"));
+            String endHr = Parse.getString(jsonObject.get("loppaegtund"));
+            String endMin = Parse.getString(jsonObject.get("loppaegmin"));
 
-            String date = getString(jsonObject.get("kuupaev"));
+            String date = Parse.getString(jsonObject.get("kuupaev"));
             String startTime = startHr + ":" + startMin;
             String endTime = endHr + ":" + endMin;
-            String location = getString(jsonObject.get("koht"));
-            String ticket = getString(jsonObject.get("hind"));
-            String organizer = getString(jsonObject.get("korraldajad"));
-            String additionalInfo = Parse.fromHtml(getString(jsonObject.get("korraldajanimi"))).toString();
-            String imageUrl = getString(jsonObject.get("pilt"));
-            String description = Parse.fromHtml(getString(jsonObject.get("kirjeldus"))).toString();
+            String location = Parse.getString(jsonObject.get("koht"));
+            String ticket = Parse.getString(jsonObject.get("hind"));
+            String organizer = Parse.getString(jsonObject.get("korraldajad"));
+            String additionalInfo = Parse.fromHtml(Parse.getString(jsonObject.get("korraldajanimi"))).toString();
+            String imageUrl = Parse.getString(jsonObject.get("pilt"));
+            String description = Parse.fromHtml(Parse.getString(jsonObject.get("kirjeldus"))).toString();
 
             Event event =  new Event.Builder(title)
                     .id(id)
@@ -137,9 +136,4 @@ public class ResponseDeserializer implements JsonDeserializer<ResponseWrapper> {
 
         return responseWrapper;
     }
-
-    private String getString(JsonElement element){
-        return element.toString().replaceAll("^\"|\"$", "").replaceAll("(\\\\n)+", "");
-    }
-
 }

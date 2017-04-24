@@ -3,6 +3,8 @@ package ee.ut.demo.helpers;
 import android.text.Html;
 import android.text.Spanned;
 
+import com.google.gson.JsonElement;
+
 /**
  * Created by Bilal Abdullah on 4/6/2017.
  */
@@ -33,5 +35,9 @@ public class Parse {
         }
 
         return text;
+    }
+
+    public static String getString(JsonElement element){
+        return element.toString().replaceAll("^\"|\"$", "").replaceAll("(\\\\n)+", "");
     }
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.List;
 
 import ee.ut.demo.domain.database.Database;
-import ee.ut.demo.domain.repository.Repository;
+import ee.ut.demo.domain.repository.GoogleRepository;
 import ee.ut.demo.domain.repository.ResponseMappingFunc;
 import ee.ut.demo.helpers.ConfigManager;
 import ee.ut.demo.helpers.Connection;
@@ -29,11 +29,11 @@ public class MapPresenter implements Presenter<MapView>{
     private Subscription mSubscription;
     private MapView mMapView;
     private Database mDatabase;
-    private Repository mRepository;
+    private GoogleRepository mRepository;
     private Context mContext;
     private List<Event> mEvents;
 
-    public MapPresenter(Context context, Repository restRepo, Database database) {
+    public MapPresenter(Context context, GoogleRepository restRepo, Database database) {
         mContext = context;
         mRepository = restRepo;
         mDatabase = database;

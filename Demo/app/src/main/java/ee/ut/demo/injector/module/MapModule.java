@@ -5,7 +5,7 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 import ee.ut.demo.domain.database.Database;
-import ee.ut.demo.domain.repository.Repository;
+import ee.ut.demo.domain.repository.GoogleRepository;
 import ee.ut.demo.injector.scope.PerActivity;
 import ee.ut.demo.mvp.presenter.MapPresenter;
 
@@ -17,7 +17,7 @@ public class MapModule {
 
     @PerActivity
     @Provides
-    public MapPresenter provideMapPresenter(Context context, Repository repository, Database database) {
+    public MapPresenter provideMapPresenter(Context context, GoogleRepository repository, Database database) {
         return new MapPresenter(context, repository, database);
     }
 }
