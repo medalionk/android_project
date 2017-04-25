@@ -275,10 +275,10 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
                         mDrawer.closeDrawers();
                         return true;
 
-                    case R.id.sponsors:
+                   /* case R.id.sponsors:
                         startActivity(new Intent(HomeActivity.this, SponsorsActivity.class));
                         mDrawer.closeDrawers();
-                        return true;
+                        return true;*/
                     default:
                         mNavItemIndex = 0;
                 }

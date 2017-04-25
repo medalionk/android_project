@@ -11,6 +11,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -38,7 +39,9 @@ import ee.ut.demo.mvp.view.MapView;
 public class MapFragment extends Fragment implements OnMapReadyCallback, MapView {
 
     private static final String PLACES_TAG = "places";
-    private static float ZOOM_LEVEL = 13.5f;
+    private static float ZOOM_LEVEL = 14f;
+    private static LatLng TARTU = new LatLng(58.378025, 26.728493);
+    private static String NAME = "Tartu Tudengipäevad";
 
     @Inject
     MapPresenter mMapPresenter;
@@ -49,6 +52,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapView
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.addMarker(new MarkerOptions().position(TARTU)
+                .title(NAME));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                TARTU, ZOOM_LEVEL));
         mMapPresenter.onStart();
     }
 
@@ -155,10 +162,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapView
                 }
             }
 
-            if(place != null){
+            /*if(place != null){
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         place.getLocation(), ZOOM_LEVEL));
-            }
+            }*/
+
+
 
         }
     }
